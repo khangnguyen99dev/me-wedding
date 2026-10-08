@@ -1,0 +1,93 @@
+{
+    "settings": {
+        "hero": {
+            "couple_names": "Thế Thoại & Hoài Thu",
+            "quote": "Ở thời điểm phù hợp nhất, mặc lên người bộ váy cưới đẹp nhất, gả cho người đáng tin cậy nhất.",
+            "background": "@image:z5764697547771_7ee5d22a65c4596e722c8e27a934b810-20240827165330-wdfqv_3.jpg"
+        },
+        "invite": {
+            "heading": "TRÂN TRỌNG KÍNH MỜI",
+            "intro_groom": "Tới dự bữa Tiệc Thân Mật & tiệc Lễ Thành Hôn chung vui cùng gia đình chúng tôi",
+            "intro_bride": "Tới dự bữa Tiệc Thân Mật & tiệc Lễ Vu Quy chung vui cùng gia đình chúng tôi",
+            "closing": "Sự hiện diện của quý khách là niềm vinh dự cho gia đình chúng tôi !"
+        },
+        "couple": {
+            "groom_name": "Cao Minh",
+            "groom_bio": "Đối với chúng mình hôn nhân không phải là đích đến cuối của tình yêu mà là khởi đầu của hạnh phúc.",
+            "groom_parents": "Ông : Nguyễn Kiêm Thắng\nBà : Nguyễn Thị Huyền",
+            "groom_photo": "@image:z5764697484764_9550c8c67292490cdfe8220f0e75974c-20240827165326-3pfux_2.jpg",
+            "bride_name": "Nguyễn Thủy",
+            "bride_bio": "Ở thời điểm phù hợp nhất, khoác lên mình bộ váy cưới đẹp nhất, gả cho người đáng tin cậy nhất, là anh.",
+            "bride_parents": "Ông : ...\nBà : Kiều Thị Thuỷ",
+            "bride_photo": "@image:z5764697529435_3fb716bf237e8f73db9ff105303e0352-20240827165317-tlvxf_1.jpg"
+        },
+        "events": {
+            "e1_title": "TIỆC THÂN MẬT NHÀ TRAI",
+            "e1_time": "Tổ chức vào lúc 15 giờ 30 phút",
+            "e1_day": "Thứ 7, ngày 07 tháng 09 năm 2024",
+            "e1_lunar": "(Tức ngày 05 tháng 08 năm Giáp Thìn)",
+            "e1_venue": "Tại : Tư Gia nhà Trai",
+            "e1_address": "Thôn Thủ Độ, An Tường, Vĩnh Tường, Vĩnh Phúc",
+
+            "e2_title": "TIỆC THÀNH HÔN NHÀ TRAI",
+            "e2_time": "Tổ chức vào lúc 08 giờ 30 phút",
+            "e2_day": "Chủ Nhật, ngày 08 tháng 09 năm 2024",
+            "e2_lunar": "(Tức ngày 06 tháng 08 năm Giáp Thìn)",
+            "e2_venue": "Tại : Tư Gia nhà Trai",
+            "e2_address": "Thôn Thủ Độ, An Tường, Vĩnh Tường, Vĩnh Phúc",
+
+            "e3_title": "TIỆC THÂN MẬT NHÀ GÁI",
+            "e3_time": "Tổ chức vào lúc 17 giờ 00 phút",
+            "e3_day": "Thứ 7, ngày 07 tháng 09 năm 2024",
+            "e3_lunar": "(Tức ngày 05 tháng 08 năm Giáp Thìn)",
+            "e3_venue": "Tại : Tư Gia nhà Gái",
+            "e3_address": "Thôn Trung, Phú Đa, Vĩnh Tường, Vĩnh Phúc",
+
+            "e4_title": "TIỆC LỄ VU QUY NHÀ GÁI",
+            "e4_time": "Tổ chức vào lúc 09 giờ 30 phút",
+            "e4_day": "Chủ Nhật, ngày 08 tháng 09 năm 2024",
+            "e4_lunar": "(Tức ngày 06 tháng 08 năm Giáp Thìn)",
+            "e4_venue": "Tại : Tư Gia nhà Gái",
+            "e4_address": "Thôn Trung, Phú Đa, Vĩnh Tường, Vĩnh Phúc"
+        },
+        "story": {
+            "items": [
+                {
+                    "title": "GẶP GỠ VÀ DUYÊN PHẬN",
+                    "content": "Tình yêu là sự rung cảm của một tâm hồn khi gặp một tâm hồn đồng điệu, là sự hòa nhịp của hai trái tim.",
+                    "image": "@image:ban-sao-cua-file-chu-anh-khoa-mai-anh-cau-chuyen-tinh-yeu-4-2-20240828080648-xql_y.png"
+                },
+                {
+                    "title": "NĂM THÁNG YÊU NHAU",
+                    "content": "Hạnh phúc là khi gặp được người tuyệt nhất ở những giai đoạn đẹp nhất của tuổi thanh xuân và cùng nhau già đi.",
+                    "image": "@image:ban-sao-cua-file-chu-anh-khoa-mai-anh-cau-chuyen-tinh-yeu-5-2-20240828080649-aetp7.png"
+                },
+                {
+                    "title": "NGÀY MÌNH CHUNG ĐÔI",
+                    "content": "Duyên phận là một điều vô cùng thú vị. Đến một lúc nào đó, tất cả những bối rối trong cuộc đời sẽ có câu trả lời.",
+                    "image": "@image:ban-sao-cua-file-chu-anh-khoa-mai-anh-cau-chuyen-tinh-yeu-7-2-20240828080649-tefzr.png"
+                }
+            ]
+        },
+        "gallery": {
+            "heading": "Wedding Moments",
+            "tagline": "Những khoảnh khắc đáng nhớ của chúng tôi.",
+            "images": [
+                "@image:z5764697484764_9550c8c67292490cdfe8220f0e75974c-20240827165326-3pfux_1.jpg",
+                "@image:z5764697493791_4691cbad22819b89413fe1451ebc1ac3-20240827165316-wyiof.jpg",
+                "@image:z5764697529218_483439675e3e34c0d28a263b597949ee-20240827165317-b8cdg_1.jpg",
+                "@image:z5764697473734_0e05108a03a2ca92b59b59b39fbfc15a-20240828070816-fae9a_2.jpg",
+                "@image:z5764697513167_1c41f468e46b19a6fe2780461602256c-20240827165317-4ltl__1.jpg",
+                "@image:z5764697547771_7ee5d22a65c4596e722c8e27a934b810-20240827165330-wdfqv_1.jpg",
+                "@image:z5764697537902_d8e4288480aa52398827aded92fd52b7-20240827165330-4ll8v_1.jpg",
+                "@image:z5764697529612_2526ea2bdf65e66ec7452289847fa42f-20240827165330-o_pbb_3.jpg",
+                "@image:z5764697462520_2c0b444cbe2b6ede6feab9233a7ef7f2-20240827165324-7436c.jpg",
+                "@image:z5764697525762_0a71d66a434ea9b877cf797a4bae90f7-20240827165317-yifa8_1.jpg"
+            ]
+        },
+        "guestbook": { "enabled": true, "moderate": false, "heading": "Wedding Wishes", "intro": "Để lại lời chúc tới Cao Minh & Nguyễn Thủy nhé!" },
+        "rsvp": { "enabled": true, "heading": "Wedding Attending", "intro": "Vui lòng xác nhận để chúng tôi chuẩn bị chu đáo.", "food_options": "Mặn, Chay" },
+        "music": { "autoplay": true, "loop": true }
+    },
+    "theme": {}
+}

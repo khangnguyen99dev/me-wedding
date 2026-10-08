@@ -1,0 +1,199 @@
+{
+    "name": "Basic",
+    "version": "1.0.0",
+    "engine": "ladipage",
+    "description": "Thiệp cưới phong cách hiện đại, bố cục Nhà Trai / Nhà Gái riêng, tông sáng nhẹ (bản gốc LadiPage, giống 100%).",
+    "thumbnail": "images/thumbnail.jpg",
+    "ladipage": {
+        "sections": { "gallery": "SECTION359", "rsvp": "XDTN", "guestbook": "SECTION362" },
+        "hide": [],
+        "nav": [
+            { "label": "Thiệp mời", "section": "SECTION353" },
+            { "label": "Lịch trình", "section": "SECTION354" },
+            { "label": "Chú Rể & Cô Dâu", "section": "SECTION358" },
+            { "label": "Album ảnh", "section": "SECTION359" },
+            { "label": "Câu chuyện", "section": "SECTION360" },
+            { "label": "Lời chúc", "section": "SECTION362" },
+            { "label": "Xác nhận tham dự", "section": "XDTN" }
+        ],
+        "fit": ["HEADLINE427", "HEADLINE439", "HEADLINE433", "HEADLINE465", "HEADLINE467", "HEADLINE468", "HEADLINE469", "HEADLINE477"],
+        "text": {
+            "HEADLINE427": "hero.couple_names",
+            "PARAGRAPH439": "hero.quote",
+            "HEADLINE439": "hero.couple_names",
+            "HEADLINE433": "hero.couple_names",
+            "HEADLINE465": "hero.couple_names",
+            "HEADLINE467": "hero.couple_names",
+            "HEADLINE477": "hero.couple_names",
+
+            "PARAGRAPH461": "invite.heading",
+            "PARAGRAPH441": "invite.heading",
+            "PARAGRAPH462": "invite.intro_groom",
+            "PARAGRAPH442": "invite.intro_bride",
+            "HEADLINE440": "invite.closing",
+            "HEADLINE435": "invite.closing",
+
+            "HEADLINE468": "couple.groom_name",
+            "PARAGRAPH569": "couple.groom_bio",
+            "PARAGRAPH568": "couple.groom_parents",
+            "HEADLINE469": "couple.bride_name",
+            "PARAGRAPH570": "couple.bride_bio",
+            "PARAGRAPH567": "couple.bride_parents",
+
+            "PARAGRAPH464": "events.e1_title",
+            "PARAGRAPH465": "events.e1_time",
+            "PARAGRAPH466": "events.e1_day",
+            "PARAGRAPH467": "events.e1_lunar",
+            "HEADLINE443": "events.e1_venue",
+            "PARAGRAPH468": "events.e1_address",
+
+            "PARAGRAPH469": "events.e2_title",
+            "PARAGRAPH470": "events.e2_time",
+            "PARAGRAPH471": "events.e2_day",
+            "PARAGRAPH472": "events.e2_lunar",
+            "HEADLINE444": "events.e2_venue",
+            "PARAGRAPH473": "events.e2_address",
+
+            "PARAGRAPH451": "events.e3_title",
+            "PARAGRAPH452": "events.e3_time",
+            "PARAGRAPH453": "events.e3_day",
+            "PARAGRAPH454": "events.e3_lunar",
+            "HEADLINE434": "events.e3_venue",
+            "PARAGRAPH455": "events.e3_address",
+
+            "PARAGRAPH456": "events.e4_title",
+            "PARAGRAPH457": "events.e4_time",
+            "PARAGRAPH458": "events.e4_day",
+            "PARAGRAPH459": "events.e4_lunar",
+            "HEADLINE438": "events.e4_venue",
+            "PARAGRAPH460": "events.e4_address",
+
+            "PARAGRAPH571": "story.items.0.title",
+            "PARAGRAPH572": "story.items.0.content",
+            "PARAGRAPH573": "story.items.1.title",
+            "PARAGRAPH574": "story.items.1.content",
+            "PARAGRAPH575": "story.items.2.title",
+            "PARAGRAPH576": "story.items.2.content"
+        },
+        "images": {
+            "z5764697547771_7ee5d22a65c4596e722c8e27a934b810-20240827165330-wdfqv_3.jpg": "hero.background",
+            "z5764697484764_9550c8c67292490cdfe8220f0e75974c-20240827165326-3pfux_2.jpg": "couple.groom_photo",
+            "z5764697529435_3fb716bf237e8f73db9ff105303e0352-20240827165317-tlvxf_1.jpg": "couple.bride_photo",
+            "ban-sao-cua-file-chu-anh-khoa-mai-anh-cau-chuyen-tinh-yeu-4-2-20240828080648-xql_y.png": "story.items.0.image",
+            "ban-sao-cua-file-chu-anh-khoa-mai-anh-cau-chuyen-tinh-yeu-5-2-20240828080649-aetp7.png": "story.items.1.image",
+            "ban-sao-cua-file-chu-anh-khoa-mai-anh-cau-chuyen-tinh-yeu-7-2-20240828080649-tefzr.png": "story.items.2.image"
+        }
+    },
+    "theme": {},
+    "theme_schema": {},
+    "sections": {
+        "hero": {
+            "label": "Trang bìa",
+            "fields": {
+                "couple_names": { "type": "text", "label": "Tên cặp đôi (hiển thị chung)", "required": true, "max": 80, "help": "VD: Thế Thoại & Hoài Thu. Hiển thị ở bìa, thiệp mời, đếm ngược, chân trang." },
+                "quote": { "type": "textarea", "label": "Câu dẫn / trích dẫn", "max": 300 },
+                "background": { "type": "image", "label": "Ảnh nền trang bìa" }
+            }
+        },
+        "invite": {
+            "label": "Thiệp mời",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "TRÂN TRỌNG KÍNH MỜI", "max": 60 },
+                "intro_groom": { "type": "textarea", "label": "Lời mời (Nhà Trai)", "max": 300, "group": "Nhà Trai" },
+                "intro_bride": { "type": "textarea", "label": "Lời mời (Nhà Gái)", "max": 300, "group": "Nhà Gái" },
+                "closing": { "type": "textarea", "label": "Lời kết", "max": 200 }
+            }
+        },
+        "couple": {
+            "label": "Chú Rể & Cô Dâu",
+            "fields": {
+                "groom_name": { "type": "text", "label": "Tên chú rể", "group": "Chú rể", "max": 80 },
+                "groom_bio": { "type": "textarea", "label": "Giới thiệu", "group": "Chú rể", "max": 600 },
+                "groom_parents": { "type": "textarea", "label": "Bố / Mẹ (Nhà Trai)", "group": "Chú rể", "max": 200 },
+                "groom_photo": { "type": "image", "label": "Ảnh chú rể", "group": "Chú rể" },
+                "bride_name": { "type": "text", "label": "Tên cô dâu", "group": "Cô dâu", "max": 80 },
+                "bride_bio": { "type": "textarea", "label": "Giới thiệu", "group": "Cô dâu", "max": 600 },
+                "bride_parents": { "type": "textarea", "label": "Bố / Mẹ (Nhà Gái)", "group": "Cô dâu", "max": 200 },
+                "bride_photo": { "type": "image", "label": "Ảnh cô dâu", "group": "Cô dâu" }
+            }
+        },
+        "events": {
+            "label": "Sự kiện (4 tiệc: Nhà Trai & Nhà Gái)",
+            "fields": {
+                "e1_title": { "type": "text", "label": "Tên tiệc", "group": "Tiệc 1 — Thân mật Nhà Trai", "max": 80 },
+                "e1_time": { "type": "text", "label": "Giờ", "group": "Tiệc 1 — Thân mật Nhà Trai", "max": 60 },
+                "e1_day": { "type": "text", "label": "Ngày dương", "group": "Tiệc 1 — Thân mật Nhà Trai", "max": 60 },
+                "e1_lunar": { "type": "text", "label": "Ngày âm", "group": "Tiệc 1 — Thân mật Nhà Trai", "max": 80 },
+                "e1_venue": { "type": "text", "label": "Địa điểm", "group": "Tiệc 1 — Thân mật Nhà Trai", "max": 120 },
+                "e1_address": { "type": "text", "label": "Địa chỉ", "group": "Tiệc 1 — Thân mật Nhà Trai", "max": 200 },
+
+                "e2_title": { "type": "text", "label": "Tên tiệc", "group": "Tiệc 2 — Thành hôn Nhà Trai", "max": 80 },
+                "e2_time": { "type": "text", "label": "Giờ", "group": "Tiệc 2 — Thành hôn Nhà Trai", "max": 60 },
+                "e2_day": { "type": "text", "label": "Ngày dương", "group": "Tiệc 2 — Thành hôn Nhà Trai", "max": 60 },
+                "e2_lunar": { "type": "text", "label": "Ngày âm", "group": "Tiệc 2 — Thành hôn Nhà Trai", "max": 80 },
+                "e2_venue": { "type": "text", "label": "Địa điểm", "group": "Tiệc 2 — Thành hôn Nhà Trai", "max": 120 },
+                "e2_address": { "type": "text", "label": "Địa chỉ", "group": "Tiệc 2 — Thành hôn Nhà Trai", "max": 200 },
+
+                "e3_title": { "type": "text", "label": "Tên tiệc", "group": "Tiệc 3 — Thân mật Nhà Gái", "max": 80 },
+                "e3_time": { "type": "text", "label": "Giờ", "group": "Tiệc 3 — Thân mật Nhà Gái", "max": 60 },
+                "e3_day": { "type": "text", "label": "Ngày dương", "group": "Tiệc 3 — Thân mật Nhà Gái", "max": 60 },
+                "e3_lunar": { "type": "text", "label": "Ngày âm", "group": "Tiệc 3 — Thân mật Nhà Gái", "max": 80 },
+                "e3_venue": { "type": "text", "label": "Địa điểm", "group": "Tiệc 3 — Thân mật Nhà Gái", "max": 120 },
+                "e3_address": { "type": "text", "label": "Địa chỉ", "group": "Tiệc 3 — Thân mật Nhà Gái", "max": 200 },
+
+                "e4_title": { "type": "text", "label": "Tên tiệc", "group": "Tiệc 4 — Vu quy Nhà Gái", "max": 80 },
+                "e4_time": { "type": "text", "label": "Giờ", "group": "Tiệc 4 — Vu quy Nhà Gái", "max": 60 },
+                "e4_day": { "type": "text", "label": "Ngày dương", "group": "Tiệc 4 — Vu quy Nhà Gái", "max": 60 },
+                "e4_lunar": { "type": "text", "label": "Ngày âm", "group": "Tiệc 4 — Vu quy Nhà Gái", "max": 80 },
+                "e4_venue": { "type": "text", "label": "Địa điểm", "group": "Tiệc 4 — Vu quy Nhà Gái", "max": 120 },
+                "e4_address": { "type": "text", "label": "Địa chỉ", "group": "Tiệc 4 — Vu quy Nhà Gái", "max": 200 }
+            }
+        },
+        "story": {
+            "label": "Câu chuyện tình yêu (3 mốc)",
+            "repeater": {
+                "label": "Các mốc thời gian (giữ đúng 3 mốc theo thiết kế)",
+                "item_label": "Mốc",
+                "item_fields": {
+                    "title": { "type": "text", "label": "Tiêu đề", "max": 120 },
+                    "content": { "type": "textarea", "label": "Nội dung", "max": 600 },
+                    "image": { "type": "image", "label": "Hình ảnh" }
+                }
+            }
+        },
+        "gallery": {
+            "label": "Album ảnh (không giới hạn)",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "Wedding Moments", "max": 60 },
+                "tagline": { "type": "text", "label": "Câu dẫn", "max": 200 },
+                "images": { "type": "gallery", "label": "Bộ sưu tập ảnh", "help": "Kéo-thả sắp xếp. Không giới hạn số lượng." }
+            }
+        },
+        "guestbook": {
+            "label": "Sổ lưu bút",
+            "fields": {
+                "enabled": { "type": "boolean", "label": "Bật sổ lưu bút", "default": true },
+                "moderate": { "type": "boolean", "label": "Duyệt lời chúc trước khi hiển thị", "default": false },
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "Wedding Wishes", "max": 60 },
+                "intro": { "type": "text", "label": "Mô tả", "max": 200 }
+            }
+        },
+        "rsvp": {
+            "label": "Xác nhận tham dự",
+            "fields": {
+                "enabled": { "type": "boolean", "label": "Bật form RSVP", "default": true },
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "Wedding Attending", "max": 60 },
+                "intro": { "type": "text", "label": "Mô tả", "max": 200 },
+                "food_options": { "type": "text", "label": "Lựa chọn món (phân tách bởi dấu phẩy)", "max": 200, "default": "Mặn, Chay" }
+            }
+        },
+        "music": {
+            "label": "Nhạc nền",
+            "fields": {
+                "audio": { "type": "audio", "label": "File nhạc (mp3) — để trống dùng nhạc gốc" },
+                "autoplay": { "type": "boolean", "label": "Tự động phát", "default": true },
+                "loop": { "type": "boolean", "label": "Lặp lại", "default": true }
+            }
+        }
+    }
+}

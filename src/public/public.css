@@ -1,0 +1,290 @@
+@import 'tailwindcss';
+
+/* Scan the public hydration scripts so utility classes survive purge */
+@source './**/*.ts';
+
+/*
+ | Base public styles shared by all templates (music player, hearts, lightbox).
+ | Template-specific look & feel lives in each template's own published CSS.
+ */
+:root {
+    --inv-primary: #b8860b;
+    --inv-secondary: #6e2f22;
+    --inv-bg: #fffdf9;
+    --inv-text: #2c2420;
+    --inv-font-body: 'Be Vietnam Pro', system-ui, sans-serif;
+    --inv-font-heading: 'Playfair Display', serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--inv-bg);
+    color: var(--inv-text);
+    font-family: var(--inv-font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* ---- Floating music player ---- */
+.inv-music {
+    position: fixed;
+    z-index: 9999;
+    left: 16px;
+    bottom: 16px;
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 9999px;
+    background: var(--inv-primary);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    display: grid;
+    place-items: center;
+}
+
+.inv-music.playing svg {
+    animation: inv-spin 4s linear infinite;
+}
+
+@keyframes inv-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---- Floating hearts (realtime) ---- */
+.inv-hearts {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    overflow: hidden;
+}
+
+.inv-heart {
+    position: absolute;
+    bottom: -40px;
+    font-size: 28px;
+    animation: inv-float-up 4s ease-in forwards;
+}
+
+@keyframes inv-float-up {
+    0% {
+        transform: translateY(0) scale(0.6);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* ---- Reveal on scroll (progressive enhancement) ----
+   Only hide elements when JS is active (html.js). Without JS, everything is
+   visible — safe for SEO / no-JS / slow connections. */
+.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity 0.7s ease,
+        transform 0.7s ease;
+}
+
+.js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .js [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+@media print {
+    .js [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* ---- Guestbook wish item (rendered by shared JS, theme-agnostic) ---- */
+.inv-wish {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.inv-wish--new {
+    animation: inv-pop 0.5s ease;
+}
+.inv-wish__name {
+    font-weight: 600;
+    color: var(--inv-primary);
+}
+.inv-wish__msg {
+    font-size: 0.92rem;
+    margin-top: 2px;
+}
+@keyframes inv-pop {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ---- Injected blocks for LadiPage (pixel-perfect) templates ---- */
+.inv-injected {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 56px 20px;
+    text-align: center;
+}
+.inv-injected__title {
+    font-family: var(--inv-font-heading, serif);
+    font-size: clamp(1.4rem, 5vw, 2rem);
+    color: var(--inv-primary);
+    margin: 0 0 6px;
+}
+.inv-injected__sub {
+    margin: 0 0 26px;
+    opacity: 0.75;
+    font-size: 0.95rem;
+}
+.inv-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+@media (min-width: 620px) {
+    .inv-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+}
+.inv-grid figure { margin: 0; aspect-ratio: 3 / 4; overflow: hidden; border-radius: 10px; }
+.inv-grid img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.inv-grid figure:hover img { transform: scale(1.06); }
+
+.inv-pubform {
+    max-width: 460px;
+    margin: 0 auto;
+    display: grid;
+    gap: 12px;
+    text-align: left;
+}
+.inv-pubform input,
+.inv-pubform select,
+.inv-pubform textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid color-mix(in srgb, var(--inv-primary) 35%, #ddd);
+    border-radius: 10px;
+    font: inherit;
+    background: #fff;
+    color: inherit;
+}
+.inv-pubform textarea { min-height: 92px; resize: vertical; }
+.inv-pubform__row { display: flex; gap: 12px; }
+.inv-pubform__row > * { flex: 1; }
+.inv-pubform button {
+    border: none; cursor: pointer; border-radius: 30px;
+    background: var(--inv-primary); color: #fff; padding: 12px 24px; font: inherit; font-weight: 600;
+}
+.inv-counter { text-align: center; margin-bottom: 14px; }
+.inv-counter strong { color: var(--inv-primary); font-size: 1.2rem; }
+
+/* ---- Floating nav (injected for LadiPage templates) ---- */
+.inv-fab {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 9990;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.inv-fab__btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: var(--inv-primary, #b8860b);
+    color: #fff;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+    display: grid;
+    place-items: center;
+    transition: filter 0.2s;
+}
+.inv-fab__btn:hover {
+    filter: brightness(1.08);
+}
+.inv-drawer {
+    position: fixed;
+    right: 16px;
+    bottom: 120px;
+    z-index: 9991;
+    min-width: 200px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.22);
+    padding: 8px;
+    display: none;
+}
+.inv-drawer.open {
+    display: block;
+    animation: inv-pop 0.2s ease;
+}
+.inv-drawer a {
+    display: block;
+    padding: 10px 14px;
+    color: var(--inv-text, #333);
+    text-decoration: none;
+    border-radius: 9px;
+    font-size: 0.95rem;
+}
+.inv-drawer a:hover {
+    background: var(--inv-primary, #b8860b);
+    color: #fff;
+}
+
+/* ---- Lightbox ---- */
+.inv-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    place-items: center;
+    padding: 24px;
+}
+
+.inv-lightbox.open {
+    display: grid;
+}
+
+.inv-lightbox img {
+    max-width: 92vw;
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 6px;
+}

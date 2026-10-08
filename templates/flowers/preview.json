@@ -1,0 +1,141 @@
+{
+    "settings": {
+        "hero": {
+            "logo": "@image:kane-monogram-400x400.png",
+            "eyebrow": "THÂN MỜI TỚI DỰ BỮA TIỆC",
+            "groom_name": "Anh Tú",
+            "bride_name": "Phương Anh",
+            "date_badge": "14.09"
+        },
+        "invite": {
+            "title": "Thiệp Mời",
+            "subtitle": "Trân trọng kính mời!",
+            "save_the_date": "SAVE THE DATE",
+            "couple_names": "Anh Tú & Phương Anh",
+            "heading": "TRÂN TRỌNG KÍNH MỜI",
+            "guest_name": "Bạn + NT (GĐ Bạn)",
+            "intro": "Đến dự buổi tiệc chung vui cùng gia đình chúng tôi",
+            "photo": "@image:z5583219519953_3d5b2a614d9d83009837386f3a3f214f-20240628124104-a4qfb.jpg",
+            "time": "10 GIỜ 00",
+            "day": "THỨ BẢY",
+            "date_day": "14",
+            "month_year": "09 - 2024",
+            "lunar": "( Nhằm ngày 12 tháng 08 năm Giáp Thìn )",
+            "venue": "Tại : Khách Sạn Lâm Ký\n119 Quang Trung, TX Sơn Tây, TP Hà Nội",
+            "map_url": "https://maps.app.goo.gl/d1RGeoPdVeoqBF3B7",
+            "closing": "Sự hiện diện của quý khách là niềm vinh dự cho gia đình chúng tôi !"
+        },
+        "couple": {
+            "heading": "Chú Rể & Cô Dâu",
+            "groom_name": "Anh Tú",
+            "groom_parents": "Con ông : Đỗ Văn Long\nCon bà : Nguyễn Thị Hằng",
+            "bride_name": "Phương Anh",
+            "bride_parents": "Con ông : Phan Hồng Quang\nCon bà : Đỗ Thị Nga"
+        },
+        "story": {
+            "heading": "Lời Ngỏ",
+            "body": "Gặp gỡ, yêu và cưới. Điều bạn vừa nghe không nằm trong một câu chuyện cổ tích, mà là câu chuyện của chúng tôi.\nChúng tôi sẽ yêu thương, chăm sóc, trân trọng và nắm tay nhau cùng đi đến hết cuộc đời này.\nThật là một niềm vinh hạnh lớn khi ngày hạnh phúc nhất cuộc đời chúng tôi có sự hiện diện của bạn.\nChân thành cảm ơn bạn ♥ ♥"
+        },
+        "video": {
+            "label": "Xem video cưới của chúng tôi",
+            "quote": "Gặp nhiều người ở thời điểm khác nhau cũng không huy hoàng bằng gặp đúng người đúng thời điểm.",
+            "title": "Video Cưới",
+            "caption": "Chúng tôi luôn có những kỷ niệm tuyệt vời cùng nhau, dù ở bất cứ đâu, hay là bất cứ khi nào ♥️",
+            "url": "https://www.youtube.com/watch?v=vt-YPnXV8WM"
+        },
+        "countdown": {
+            "heading": "Lịch cưới Chúng mình",
+            "calendar_image": "@image:14-20240719053009-27sg6.png",
+            "info": "10:00 Thứ Bảy, Ngày 14/09/2024\n(Tức ngày 12/08 Giáp Thìn)",
+            "label_day": "Ngày",
+            "label_hour": "Giờ",
+            "label_minute": "Phút",
+            "label_second": "Giây"
+        },
+        "timeline": {
+            "heading": "TIMELINE",
+            "tagline": "Sự hiện diện của Quý vị\nlà niềm vinh hạnh của Gia đình chúng tôi!",
+            "venue": "Tại : Khách Sạn Lâm Ký\n119 Quang Trung, TX Sơn Tây, TP Hà Nội",
+            "t1_time": "09 : 00",
+            "t1_title": "Đón khách",
+            "t2_time": "09 : 30",
+            "t2_title": "Lễ Thành Hôn",
+            "t3_time": "10 : 00",
+            "t3_title": "Khai tiệc",
+            "t4_time": "11 : 30",
+            "t4_title": "Chụp ảnh cùng Cô Dâu & Chú Rể",
+            "closing": "Thank you!"
+        },
+        "dress": {
+            "heading": "Dress Code",
+            "color_1_hex": "#E0C398",
+            "color_1": "Be",
+            "color_2_hex": "#414040",
+            "color_2": "Đen",
+            "note_1": "Xin đến sớm về muộn",
+            "note_2": "Mặc đúng Dress Code để lên hình cho đẹp"
+        },
+        "events": {
+            "heading": "Sự kiện cưới",
+            "e1_title": "Tiệc Cưới",
+            "e1_time": "07:30 Chủ Nhật, ngày 08-09-2024",
+            "e1_venue": "Tại : Khách Sạn Lâm Ký\n119 Quang Trung, TX Sơn Tây, TP Hà Nội",
+            "e1_map_url": "https://maps.app.goo.gl/Gxu38EXCi59UQARw6",
+            "e2_title": "Lễ Thành Hôn",
+            "e2_time": "07:30 Chủ Nhật, ngày 08-09-2024",
+            "e2_venue": "Tại : Khách Sạn Lâm Ký\n119 Quang Trung, TX Sơn Tây, TP Hà Nội",
+            "e2_map_url": "https://maps.app.goo.gl/Gxu38EXCi59UQARw6"
+        },
+        "gift": {
+            "enabled": true,
+            "heading": "CHÚC PHÚC",
+            "intro": "Cảm ơn tất cả tình cảm của cô dì chú bác, bạn bè và anh chị em đã dành cho Tú & Anh ♥️",
+            "groom_name": "Anh Tú",
+            "groom_role": "Chú Rể",
+            "groom_qr_title": "MỪNG CƯỚI ĐẾN\nCHÚ RỂ",
+            "groom_qr": "@image:3b5f245e-7e4b-490a-b707-48f07e069513-20240626153947-55y_s.jpg",
+            "groom_account": "0848753999",
+            "groom_contact_label": ">> Gửi ảnh phong bì đến chú rể",
+            "bride_name": "Phương Anh",
+            "bride_role": "Cô Dâu",
+            "bride_qr_title": "MỪNG CƯỚI ĐẾN\nCÔ DÂU",
+            "bride_qr": "@image:fd41a4d1-315f-4b19-9665-96911e364677-20240626153947-rede5.jpg",
+            "bride_account": "290819988888",
+            "bride_contact_label": ">> Gửi ảnh phong bì đến cô dâu"
+        },
+        "gallery": {
+            "heading": "Album Ảnh",
+            "tagline": "Những khoảnh khắc đáng nhớ của chúng tôi.",
+            "images": [
+                "@image:z5583219519965_1979ad524e89caf71ef1f41338abea26-20240628124104-3bfic.jpg",
+                "@image:z5583219519901_5cc50ac8a4e76f0660d62ff4e1904c2d-20240628124104-v64oj.jpg",
+                "@image:z5583219470385_e91cc9b34b077fa1d5cc2ac5e89ef7e6-20240628124050-mvvma.jpg",
+                "@image:z5583219569766_68be02dfb4ecdba783b6f40c777811b3-20240628124112-6z5wp.jpg",
+                "@image:z5583219569680_31db69a10083dca6ee0f5eec5021912c-20240628124112-u47f3.jpg",
+                "@image:z5583219519953_3d5b2a614d9d83009837386f3a3f214f-20240628124104-a4qfb.jpg"
+            ]
+        },
+        "guestbook": {
+            "enabled": true,
+            "moderate": false,
+            "heading": "Gửi Lời Chúc Mừng",
+            "intro": "Để lại lời chúc tới Anh Tú & Phương Anh nhé!"
+        },
+        "rsvp": {
+            "enabled": true,
+            "heading": "Xác Nhận Tham Dự",
+            "intro": "Vui lòng xác nhận để chúng tôi chuẩn bị chu đáo.",
+            "food_options": "Mặn, Chay"
+        },
+        "footer": {
+            "thanks": "Thank You!",
+            "note": "Sự hiện diện của quý vị là niềm vinh hạnh cho gia đình chúng tôi.",
+            "happy": "HAPPY WEDDING ANH TÚ & PHƯƠNG ANH"
+        },
+        "music": {
+            "autoplay": true,
+            "loop": true
+        }
+    },
+    "theme": {}
+}

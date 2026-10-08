@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+
+/* Scan admin SPA sources so Tailwind keeps the classes we use */
+@source './**/*.{vue,ts}';
+@source '../../index.html';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji';
+    --color-brand-50: #fdf6f3;
+    --color-brand-100: #fae8e1;
+    --color-brand-200: #f5d0c3;
+    --color-brand-300: #edb09b;
+    --color-brand-400: #e08568;
+    --color-brand-500: #d4633f;
+    --color-brand-600: #c14d2c;
+    --color-brand-700: #a13d25;
+    --color-brand-800: #843424;
+    --color-brand-900: #6e2f22;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+#admin-app {
+    min-height: 100vh;
+}

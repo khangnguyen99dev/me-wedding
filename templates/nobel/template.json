@@ -1,0 +1,157 @@
+{
+    "name": "Nobel",
+    "version": "2.0.0",
+    "engine": "ladipage",
+    "description": "Thiệp cưới phong cách Luxury sang trọng, tông vàng gold / kem (bản gốc LadiPage, giống 100%).",
+    "thumbnail": "images/thumbnail.jpg",
+    "ladipage": {
+        "sections": { "gallery": "SECTION6", "rsvp": "SECTION20", "guestbook": "SECTION16" },
+        "hide": ["GROUP103", "NOTIFY1"],
+        "nav": [
+            { "label": "Thiệp mời", "section": "SECTION7" },
+            { "label": "Câu chuyện", "section": "SECTION5" },
+            { "label": "Chân dung dâu rể", "section": "SECTION3" },
+            { "label": "Album ảnh", "section": "SECTION6" },
+            { "label": "Địa điểm", "section": "SECTION11" },
+            { "label": "Mừng cưới", "section": "SECTION4" },
+            { "label": "Lời chúc", "section": "SECTION16" },
+            { "label": "Xác nhận tham dự", "section": "SECTION20" }
+        ],
+        "fit": ["HEADLINE3", "HEADLINE4", "HEADLINE7", "HEADLINE10"],
+        "text": {
+            "HEADLINE3": "hero.groom_name",
+            "HEADLINE4": "hero.bride_name",
+            "PARAGRAPH1": "hero.date",
+            "PARAGRAPH2": "hero.subtitle",
+            "PARAGRAPH50": "invite.intro",
+            "HEADLINE7": "couple.groom_name",
+            "HEADLINE8": "couple.groom_bio",
+            "PARAGRAPH44": "couple.groom_parents",
+            "HEADLINE10": "couple.bride_name",
+            "HEADLINE11": "couple.bride_bio",
+            "PARAGRAPH46": "couple.bride_parents",
+            "HEADLINE13": "story.items.0.date",
+            "HEADLINE14": "story.items.0.title",
+            "HEADLINE15": "story.items.0.content",
+            "HEADLINE16": "story.items.1.date",
+            "HEADLINE17": "story.items.1.title",
+            "HEADLINE18": "story.items.1.content",
+            "HEADLINE19": "story.items.2.date",
+            "HEADLINE20": "story.items.2.title",
+            "HEADLINE21": "story.items.2.content",
+            "HEADLINE22": "story.items.3.date",
+            "HEADLINE23": "story.items.3.title",
+            "HEADLINE24": "story.items.3.content",
+            "PARAGRAPH54": "events.gai_time",
+            "PARAGRAPH58": "events.gai_lunar",
+            "PARAGRAPH59": "events.gai_venue",
+            "PARAGRAPH60": "events.gai_address",
+            "PARAGRAPH36": "events.trai_time",
+            "PARAGRAPH41": "events.trai_venue",
+            "PARAGRAPH45": "events.trai_address"
+        },
+        "images": {
+            "kane-monogram-400x400.png": "hero.logo",
+            "dbffb014-1193-4bdf-898d-06f6ff680fb3-20240609110815-voeez.jpg": "hero.background",
+            "q2LEMuoI20210123080955.jpeg": "couple.groom_photo",
+            "uffTbu4J20210123080902.jpeg": "couple.bride_photo",
+            "107d30c4-bdbb-4abc-9ffd-e6e120408606-20240609110809-cai4b.jpg": "story.items.0.image",
+            "2c6f7433-dbab-4e21-b23d-113a4cc14efb-20240609110808-6jsbj.jpg": "story.items.1.image",
+            "8bcac07c-6b5e-4f86-bded-e1d7153fc809-20240609110809-fsrkc.jpg": "story.items.2.image",
+            "9ac76cc6-46c7-4da3-9aec-cc85a68b4f2d-20240609110809-rwltb.jpg": "story.items.3.image"
+        }
+    },
+    "theme": {},
+    "theme_schema": {},
+    "sections": {
+        "hero": {
+            "label": "Trang bìa",
+            "fields": {
+                "logo": { "type": "image", "label": "Logo / Monogram (ảnh vuông)", "help": "Nên dùng ảnh vuông, nền trong suốt (PNG)." },
+                "groom_name": { "type": "text", "label": "Tên chú rể", "required": true, "max": 80 },
+                "bride_name": { "type": "text", "label": "Tên cô dâu", "required": true, "max": 80 },
+                "date": { "type": "text", "label": "Ngày cưới (hiển thị)", "max": 40, "help": "VD: 24 - 03 - 2024" },
+                "subtitle": { "type": "textarea", "label": "Câu dẫn / trích dẫn", "max": 300 },
+                "background": { "type": "image", "label": "Ảnh nền trang bìa" }
+            }
+        },
+        "invite": {
+            "label": "Thiệp mời",
+            "fields": {
+                "intro": { "type": "textarea", "label": "Lời mời", "max": 400 }
+            }
+        },
+        "couple": {
+            "label": "Chân dung dâu rể",
+            "fields": {
+                "groom_name": { "type": "text", "label": "Tên hiển thị", "group": "Chú rể", "max": 80 },
+                "groom_bio": { "type": "textarea", "label": "Giới thiệu", "group": "Chú rể", "max": 800 },
+                "groom_parents": { "type": "textarea", "label": "Bố / Mẹ (mỗi dòng 1 người)", "group": "Chú rể", "max": 200 },
+                "groom_photo": { "type": "image", "label": "Ảnh chú rể", "group": "Chú rể" },
+                "bride_name": { "type": "text", "label": "Tên hiển thị", "group": "Cô dâu", "max": 80 },
+                "bride_bio": { "type": "textarea", "label": "Giới thiệu", "group": "Cô dâu", "max": 800 },
+                "bride_parents": { "type": "textarea", "label": "Bố / Mẹ (mỗi dòng 1 người)", "group": "Cô dâu", "max": 200 },
+                "bride_photo": { "type": "image", "label": "Ảnh cô dâu", "group": "Cô dâu" }
+            }
+        },
+        "story": {
+            "label": "Câu chuyện tình yêu (4 mốc)",
+            "repeater": {
+                "label": "Các mốc thời gian (giữ đúng 4 mốc theo thiết kế)",
+                "item_label": "Mốc",
+                "item_fields": {
+                    "date": { "type": "text", "label": "Thời gian", "max": 40 },
+                    "title": { "type": "text", "label": "Tiêu đề", "max": 120 },
+                    "content": { "type": "textarea", "label": "Nội dung", "max": 600 },
+                    "image": { "type": "image", "label": "Hình ảnh" }
+                }
+            }
+        },
+        "events": {
+            "label": "Sự kiện & Địa điểm",
+            "fields": {
+                "gai_time": { "type": "text", "label": "Giờ", "group": "Nhà gái", "max": 40 },
+                "gai_lunar": { "type": "text", "label": "Ngày âm lịch", "group": "Nhà gái", "max": 80 },
+                "gai_venue": { "type": "text", "label": "Địa điểm", "group": "Nhà gái", "max": 120 },
+                "gai_address": { "type": "text", "label": "Địa chỉ", "group": "Nhà gái", "max": 200 },
+                "trai_time": { "type": "text", "label": "Giờ", "group": "Nhà trai", "max": 40 },
+                "trai_venue": { "type": "text", "label": "Địa điểm", "group": "Nhà trai", "max": 120 },
+                "trai_address": { "type": "text", "label": "Địa chỉ", "group": "Nhà trai", "max": 200 }
+            }
+        },
+        "gallery": {
+            "label": "Album ảnh (không giới hạn)",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "Album Ảnh Cưới", "max": 60 },
+                "tagline": { "type": "text", "label": "Câu dẫn", "max": 200 },
+                "images": { "type": "gallery", "label": "Bộ sưu tập ảnh", "help": "Kéo-thả sắp xếp. Không giới hạn số lượng." }
+            }
+        },
+        "guestbook": {
+            "label": "Sổ lưu bút",
+            "fields": {
+                "enabled": { "type": "boolean", "label": "Bật sổ lưu bút", "default": true },
+                "moderate": { "type": "boolean", "label": "Duyệt lời chúc trước khi hiển thị", "default": false },
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "Gửi Lời Chúc Mừng", "max": 60 },
+                "intro": { "type": "text", "label": "Mô tả", "max": 200 }
+            }
+        },
+        "rsvp": {
+            "label": "Xác nhận tham dự",
+            "fields": {
+                "enabled": { "type": "boolean", "label": "Bật form RSVP", "default": true },
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "Xác Nhận Tham Dự", "max": 60 },
+                "intro": { "type": "text", "label": "Mô tả", "max": 200 },
+                "food_options": { "type": "text", "label": "Lựa chọn món (phân tách bởi dấu phẩy)", "max": 200, "default": "Mặn, Chay" }
+            }
+        },
+        "music": {
+            "label": "Nhạc nền",
+            "fields": {
+                "audio": { "type": "audio", "label": "File nhạc (mp3) — để trống dùng nhạc gốc" },
+                "autoplay": { "type": "boolean", "label": "Tự động phát", "default": true },
+                "loop": { "type": "boolean", "label": "Lặp lại", "default": true }
+            }
+        }
+    }
+}

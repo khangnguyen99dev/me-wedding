@@ -1,0 +1,36 @@
+# Production: app (Node) behind Caddy (automatic HTTPS for $DOMAIN).
+#   docker compose up -d --build
+services:
+  app:
+    build:
+      context: .
+      args:
+        # Inlined into the admin bundle at build time.
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+        VITE_ASSET_BASE_URL: ${VITE_ASSET_BASE_URL:-}
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  caddy_data:
+  caddy_config:

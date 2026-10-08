@@ -1,0 +1,331 @@
+{
+    "name": "Flowers",
+    "version": "2.2.0",
+    "engine": "ladipage",
+    "description": "Thiệp cưới phong cách hoa lãng mạn, tông hồng phấn / nâu ấm (bản gốc LadiPage, giống 100%).",
+    "thumbnail": "images/thumbnail.jpg",
+    "ladipage": {
+        "sections": { "gallery": "SECTION4", "rsvp": "SECTION16", "guestbook": "SECTION14" },
+        "hide": ["GROUP112", "SHAPE57", "NOTIFY1"],
+        "nav": [
+            { "label": "Thiệp mời", "section": "SECTION3" },
+            { "label": "Chú Rể & Cô Dâu", "section": "SECTION18" },
+            { "label": "Kỷ niệm", "section": "SECTION4" },
+            { "label": "Lịch trình", "section": "SECTION12" },
+            { "label": "Mừng cưới", "section": "SECTION15" },
+            { "label": "Lời chúc", "section": "SECTION14" },
+            { "label": "Xác nhận tham dự", "section": "SECTION16" }
+        ],
+        "fit": ["HEADLINE4", "HEADLINE5", "HEADLINE25", "HEADLINE79", "HEADLINE80"],
+        "text": {
+            "HEADLINE3": "hero.eyebrow",
+            "HEADLINE4": "hero.groom_name",
+            "HEADLINE5": "hero.bride_name",
+            "HEADLINE8": "hero.date_badge",
+            "HEADLINE47": "invite.title",
+            "PARAGRAPH68": "invite.subtitle",
+            "HEADLINE92": "invite.save_the_date",
+            "HEADLINE25": "invite.couple_names",
+            "HEADLINE26": "invite.heading",
+            "HEADLINE27": "invite.intro",
+            "PARAGRAPH11": "invite.time",
+            "PARAGRAPH12": "invite.date_day",
+            "PARAGRAPH13": "invite.lunar",
+            "PARAGRAPH14": "invite.day",
+            "PARAGRAPH15": "invite.month_year",
+            "HEADLINE28": "invite.venue",
+            "HEADLINE29": "invite.closing",
+            "HEADLINE75": "couple.heading",
+            "HEADLINE79": "couple.groom_name",
+            "PARAGRAPH124": "couple.groom_parents",
+            "HEADLINE80": "couple.bride_name",
+            "PARAGRAPH126": "couple.bride_parents",
+            "HEADLINE69": "story.heading",
+            "PARAGRAPH113": "story.body",
+            "PARAGRAPH130": "video.label",
+            "PARAGRAPH131": "video.quote",
+            "HEADLINE87": "video.title",
+            "PARAGRAPH132": "video.caption",
+            "HEADLINE54": "countdown.heading",
+            "PARAGRAPH75": "countdown.info",
+            "PARAGRAPH70": "countdown.label_day",
+            "PARAGRAPH71": "countdown.label_hour",
+            "PARAGRAPH72": "countdown.label_minute",
+            "PARAGRAPH73": "countdown.label_second",
+            "PARAGRAPH80": "timeline.heading",
+            "PARAGRAPH81": "timeline.tagline",
+            "PARAGRAPH79": "timeline.venue",
+            "PARAGRAPH82": "timeline.t1_time",
+            "PARAGRAPH83": "timeline.t1_title",
+            "PARAGRAPH84": "timeline.t2_time",
+            "PARAGRAPH85": "timeline.t2_title",
+            "PARAGRAPH86": "timeline.t3_time",
+            "PARAGRAPH87": "timeline.t3_title",
+            "PARAGRAPH88": "timeline.t4_time",
+            "PARAGRAPH89": "timeline.t4_title",
+            "HEADLINE96": "timeline.closing",
+            "PARAGRAPH155": "dress.heading",
+            "PARAGRAPH156": "dress.color_1",
+            "PARAGRAPH157": "dress.color_2",
+            "PARAGRAPH158": "dress.note_1",
+            "PARAGRAPH159": "dress.note_2",
+            "HEADLINE103": "events.heading",
+            "HEADLINE111": "events.e1_title",
+            "PARAGRAPH170": "events.e1_time",
+            "PARAGRAPH171": "events.e1_venue",
+            "HEADLINE112": "events.e2_title",
+            "PARAGRAPH172": "events.e2_time",
+            "PARAGRAPH173": "events.e2_venue",
+            "PARAGRAPH91": "gift.heading",
+            "PARAGRAPH100": "gift.intro",
+            "PARAGRAPH92": "gift.groom_name",
+            "PARAGRAPH93": "gift.groom_role",
+            "PARAGRAPH94": "gift.bride_name",
+            "PARAGRAPH95": "gift.bride_role",
+            "HEADLINE65": "gift.groom_qr_title",
+            "PARAGRAPH164": "gift.groom_contact_label",
+            "HEADLINE64": "gift.bride_qr_title",
+            "PARAGRAPH163": "gift.bride_contact_label",
+            "PARAGRAPH127": "footer.thanks",
+            "PARAGRAPH128": "footer.note",
+            "PARAGRAPH129": "footer.happy"
+        },
+        "images": {
+            "kane-monogram-400x400.png": "hero.logo",
+            "thiet-ke-chua-co-ten-20240719043943--sw74_1.png": "hero.background",
+            "z5583219519953_3d5b2a614d9d83009837386f3a3f214f-20240628124104-a4qfb_1.jpg": "invite.photo",
+            "z5583219519964_a38e7401bc2bbb7be0437b8a0a40c002-20240628124104-hum8q.jpg": "couple.groom_photo",
+            "z5583219569767_b3e44d78c3d50bbbae68064d0512799d-20240628124112-tdout.jpg": "couple.bride_photo",
+            "z5583219164432_981e1b1759655c926afea9680f0cbef7-20240628123950-rmi1q.jpg": "video.poster",
+            "z5583219214826_545fe7b6be49b28c836d432daa6028a0-20240628124015-0a6m-.jpg": "video.cover",
+            "14-20240719053009-27sg6.png": "countdown.calendar_image",
+            "86a5de5ed02ca2-idy07358-20240427063946-69qxh.jpg": "events.e1_image",
+            "z5583219519965_1979ad524e89caf71ef1f41338abea26-20240628124104-3bfic_3.jpg": "events.e2_image",
+            "z5583219569699_ca7fb8c85308663a08f868301f084944-20240628124112-xzg8_.jpg": "gift.groom_photo",
+            "z5583219112577_8a3bd4f6bb564b6dc5adb6456e87a633-20240628123932-averk_1.jpg": "gift.bride_photo",
+            "3b5f245e-7e4b-490a-b707-48f07e069513-20240626153947-55y_s.jpg": "gift.groom_qr",
+            "fd41a4d1-315f-4b19-9665-96911e364677-20240626153947-rede5.jpg": "gift.bride_qr"
+        },
+        "inputs": { "FORM_ITEM4": "invite.guest_name" },
+        "video": { "VIDEO1": "video.url" },
+        "countdown": { "COUNTDOWN1": "countdown.target" },
+        "actions": {
+            "BUTTON17": "rsvp",
+            "BUTTON37": "rsvp",
+            "BUTTON43": "rsvp",
+            "BUTTON45": "rsvp"
+        },
+        "links": {
+            "BUTTON18": "invite.map_url",
+            "BUTTON38": "invite.map_url",
+            "BUTTON44": "events.e1_map_url",
+            "BUTTON46": "events.e2_map_url",
+            "BUTTON26": "gift.bride_qr",
+            "BUTTON28": "gift.groom_qr",
+            "PARAGRAPH163": "gift.bride_contact_url",
+            "PARAGRAPH164": "gift.groom_contact_url"
+        },
+        "copy": {
+            "BUTTON27": "gift.bride_account",
+            "BUTTON29": "gift.groom_account"
+        },
+        "colors": {
+            "BOX38": "dress.color_1_hex",
+            "BOX39": "dress.color_2_hex"
+        },
+        "toggles": {
+            "gift.enabled": ["SECTION15", "QRchure", "QRcodau"]
+        }
+    },
+    "theme": {},
+    "theme_schema": {},
+    "sections": {
+        "hero": {
+            "label": "Trang bìa",
+            "fields": {
+                "logo": { "type": "image", "label": "Logo / Monogram (ảnh vuông)", "help": "Nên dùng ảnh vuông, nền trong suốt (PNG)." },
+                "eyebrow": { "type": "text", "label": "Dòng chữ trên", "max": 60 },
+                "groom_name": { "type": "text", "label": "Tên chú rể", "required": true, "max": 80 },
+                "bride_name": { "type": "text", "label": "Tên cô dâu", "required": true, "max": 80 },
+                "date_badge": { "type": "text", "label": "Ngày (vd 14.09)", "max": 20 },
+                "background": { "type": "image", "label": "Ảnh nền trang bìa" }
+            }
+        },
+        "invite": {
+            "label": "Thiệp mời",
+            "fields": {
+                "title": { "type": "text", "label": "Chữ trên cùng (vd Thiệp Mời)", "max": 60 },
+                "subtitle": { "type": "text", "label": "Dòng phụ (vd Trân trọng kính mời!)", "max": 120 },
+                "save_the_date": { "type": "text", "label": "Dòng SAVE THE DATE", "max": 60 },
+                "couple_names": { "type": "text", "label": "Tên cặp đôi (dưới SAVE THE DATE)", "max": 120 },
+                "heading": { "type": "text", "label": "Tiêu đề (vd TRÂN TRỌNG KÍNH MỜI)", "max": 60 },
+                "guest_name": { "type": "text", "label": "Tên khách mời mặc định", "help": "Dòng ngay dưới TRÂN TRỌNG KÍNH MỜI, vd: Bạn + NT (GĐ Bạn).", "max": 120 },
+                "intro": { "type": "text", "label": "Lời mời", "max": 200 },
+                "photo": { "type": "image", "label": "Ảnh cặp đôi trong thiệp (hình tròn)" },
+                "time": { "type": "text", "label": "Giờ (vd 10 GIỜ 00)", "group": "Ngày giờ", "max": 40 },
+                "day": { "type": "text", "label": "Thứ (vd CHỦ NHẬT)", "group": "Ngày giờ", "max": 30 },
+                "date_day": { "type": "text", "label": "Ngày — số lớn ở giữa (vd 14)", "group": "Ngày giờ", "max": 10 },
+                "month_year": { "type": "text", "label": "Tháng - năm (vd 09 - 2024)", "group": "Ngày giờ", "max": 20 },
+                "lunar": { "type": "text", "label": "Ngày âm lịch", "group": "Ngày giờ", "max": 80 },
+                "venue": { "type": "textarea", "label": "Địa điểm & địa chỉ", "help": "Mỗi dòng một hàng.", "max": 200 },
+                "map_url": { "type": "map", "label": "Link bản đồ (nút Xem bản đồ)", "help": "Dán link Google Maps của địa điểm tiệc." },
+                "closing": { "type": "text", "label": "Lời kết", "max": 200 }
+            }
+        },
+        "couple": {
+            "label": "Chú Rể & Cô Dâu",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề mục", "max": 60 },
+                "groom_name": { "type": "text", "label": "Tên chú rể", "group": "Chú rể", "max": 80 },
+                "groom_parents": { "type": "textarea", "label": "Con ông / Con bà (mỗi dòng 1)", "group": "Chú rể", "max": 200 },
+                "groom_photo": { "type": "image", "label": "Ảnh chú rể", "group": "Chú rể" },
+                "bride_name": { "type": "text", "label": "Tên cô dâu", "group": "Cô dâu", "max": 80 },
+                "bride_parents": { "type": "textarea", "label": "Con ông / Con bà (mỗi dòng 1)", "group": "Cô dâu", "max": 200 },
+                "bride_photo": { "type": "image", "label": "Ảnh cô dâu", "group": "Cô dâu" }
+            }
+        },
+        "story": {
+            "label": "Lời ngỏ",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề", "max": 60 },
+                "body": { "type": "textarea", "label": "Nội dung (mỗi dòng 1 đoạn)", "max": 2000 }
+            }
+        },
+        "video": {
+            "label": "Video cưới",
+            "fields": {
+                "label": { "type": "text", "label": "Chữ trên nút mở video", "max": 120 },
+                "quote": { "type": "textarea", "label": "Câu trích dẫn", "max": 300 },
+                "poster": { "type": "image", "label": "Ảnh nền khu vực video" },
+                "title": { "type": "text", "label": "Tiêu đề popup video", "group": "Popup video", "max": 60 },
+                "caption": { "type": "textarea", "label": "Mô tả trong popup", "group": "Popup video", "max": 300 },
+                "url": { "type": "url", "label": "Link video (YouTube hoặc mp4)", "group": "Popup video", "help": "vd https://www.youtube.com/watch?v=xxxxxxxx" },
+                "cover": { "type": "image", "label": "Ảnh bìa video", "group": "Popup video" }
+            }
+        },
+        "countdown": {
+            "label": "Đếm ngược & lịch cưới",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề (vd Lịch cưới Chúng mình)", "max": 60 },
+                "calendar_image": { "type": "image", "label": "Ảnh lịch tháng cưới" },
+                "info": { "type": "textarea", "label": "Thông tin dưới ảnh lịch", "help": "vd: 10:00 Thứ Bảy, Ngày 14/09/2024\n(Tức ngày 12/08 Giáp Thìn)", "max": 300 },
+                "target": { "type": "datetime", "label": "Thời điểm đếm ngược tới", "help": "Để trống sẽ giữ nguyên đồng hồ gốc của mẫu." },
+                "label_day": { "type": "text", "label": "Nhãn Ngày", "group": "Nhãn đồng hồ", "max": 20 },
+                "label_hour": { "type": "text", "label": "Nhãn Giờ", "group": "Nhãn đồng hồ", "max": 20 },
+                "label_minute": { "type": "text", "label": "Nhãn Phút", "group": "Nhãn đồng hồ", "max": 20 },
+                "label_second": { "type": "text", "label": "Nhãn Giây", "group": "Nhãn đồng hồ", "max": 20 }
+            }
+        },
+        "timeline": {
+            "label": "Lịch trình (4 mốc)",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề (vd TIMELINE)", "max": 60 },
+                "tagline": { "type": "textarea", "label": "Câu dẫn (mỗi dòng 1)", "max": 200 },
+                "venue": { "type": "textarea", "label": "Địa điểm (mỗi dòng 1)", "max": 200 },
+                "t1_time": { "type": "text", "label": "Mốc 1 - Giờ", "group": "Mốc 1", "max": 20 },
+                "t1_title": { "type": "text", "label": "Mốc 1 - Nội dung", "group": "Mốc 1", "max": 120 },
+                "t2_time": { "type": "text", "label": "Mốc 2 - Giờ", "group": "Mốc 2", "max": 20 },
+                "t2_title": { "type": "text", "label": "Mốc 2 - Nội dung", "group": "Mốc 2", "max": 120 },
+                "t3_time": { "type": "text", "label": "Mốc 3 - Giờ", "group": "Mốc 3", "max": 20 },
+                "t3_title": { "type": "text", "label": "Mốc 3 - Nội dung", "group": "Mốc 3", "max": 120 },
+                "t4_time": { "type": "text", "label": "Mốc 4 - Giờ", "group": "Mốc 4", "max": 20 },
+                "t4_title": { "type": "text", "label": "Mốc 4 - Nội dung", "group": "Mốc 4", "max": 120 },
+                "closing": { "type": "text", "label": "Lời cảm ơn cuối mục", "max": 120 }
+            }
+        },
+        "dress": {
+            "label": "Dress Code",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề", "max": 60 },
+                "color_1_hex": { "type": "color", "label": "Màu", "group": "Màu 1", "default": "#E0C398" },
+                "color_1": { "type": "text", "label": "Tên màu", "group": "Màu 1", "max": 40 },
+                "color_2_hex": { "type": "color", "label": "Màu", "group": "Màu 2", "default": "#414040" },
+                "color_2": { "type": "text", "label": "Tên màu", "group": "Màu 2", "max": 40 },
+                "note_1": { "type": "text", "label": "Ghi chú 1", "max": 160 },
+                "note_2": { "type": "text", "label": "Ghi chú 2", "max": 160 }
+            }
+        },
+        "events": {
+            "label": "Sự kiện cưới (2 sự kiện)",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề mục", "max": 60 },
+                "e1_title": { "type": "text", "label": "Tên sự kiện 1", "group": "Sự kiện 1", "max": 80 },
+                "e1_time": { "type": "text", "label": "Thời gian", "group": "Sự kiện 1", "max": 120 },
+                "e1_venue": { "type": "textarea", "label": "Địa điểm (mỗi dòng 1)", "group": "Sự kiện 1", "max": 200 },
+                "e1_map_url": { "type": "map", "label": "Link bản đồ", "group": "Sự kiện 1" },
+                "e1_image": { "type": "image", "label": "Ảnh sự kiện", "group": "Sự kiện 1" },
+                "e2_title": { "type": "text", "label": "Tên sự kiện 2", "group": "Sự kiện 2", "max": 80 },
+                "e2_time": { "type": "text", "label": "Thời gian", "group": "Sự kiện 2", "max": 120 },
+                "e2_venue": { "type": "textarea", "label": "Địa điểm (mỗi dòng 1)", "group": "Sự kiện 2", "max": 200 },
+                "e2_map_url": { "type": "map", "label": "Link bản đồ", "group": "Sự kiện 2" },
+                "e2_image": { "type": "image", "label": "Ảnh sự kiện", "group": "Sự kiện 2" }
+            }
+        },
+        "gift": {
+            "label": "Mừng cưới",
+            "fields": {
+                "enabled": { "type": "boolean", "label": "Hiện mục Mừng cưới", "default": true, "help": "Tắt sẽ ẩn cả mục Mừng cưới, 2 popup QR và mục này trong menu." },
+                "heading": { "type": "text", "label": "Tiêu đề (vd CHÚC PHÚC)", "max": 60 },
+                "intro": { "type": "textarea", "label": "Lời cảm ơn", "max": 400 },
+                "groom_name": { "type": "text", "label": "Tên", "group": "Chú rể", "max": 80 },
+                "groom_role": { "type": "text", "label": "Vai trò (vd Chú Rể)", "group": "Chú rể", "max": 40 },
+                "groom_photo": { "type": "image", "label": "Ảnh", "group": "Chú rể" },
+                "groom_qr_title": { "type": "textarea", "label": "Tiêu đề popup QR (mỗi dòng 1)", "group": "Chú rể", "max": 80 },
+                "groom_qr": { "type": "image", "label": "Ảnh QR chuyển khoản", "group": "Chú rể" },
+                "groom_account": { "type": "text", "label": "Số tài khoản (nút Coppy STK)", "group": "Chú rể", "max": 60 },
+                "groom_contact_label": { "type": "text", "label": "Chữ liên hệ", "group": "Chú rể", "max": 120 },
+                "groom_contact_url": { "type": "url", "label": "Link liên hệ", "group": "Chú rể" },
+                "bride_name": { "type": "text", "label": "Tên", "group": "Cô dâu", "max": 80 },
+                "bride_role": { "type": "text", "label": "Vai trò (vd Cô Dâu)", "group": "Cô dâu", "max": 40 },
+                "bride_photo": { "type": "image", "label": "Ảnh", "group": "Cô dâu" },
+                "bride_qr_title": { "type": "textarea", "label": "Tiêu đề popup QR (mỗi dòng 1)", "group": "Cô dâu", "max": 80 },
+                "bride_qr": { "type": "image", "label": "Ảnh QR chuyển khoản", "group": "Cô dâu" },
+                "bride_account": { "type": "text", "label": "Số tài khoản (nút Coppy STK)", "group": "Cô dâu", "max": 60 },
+                "bride_contact_label": { "type": "text", "label": "Chữ liên hệ", "group": "Cô dâu", "max": 120 },
+                "bride_contact_url": { "type": "url", "label": "Link liên hệ", "group": "Cô dâu" }
+            }
+        },
+        "gallery": {
+            "label": "Album ảnh (không giới hạn)",
+            "fields": {
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "Album Ảnh", "max": 60 },
+                "tagline": { "type": "text", "label": "Câu dẫn", "max": 200 },
+                "images": { "type": "gallery", "label": "Bộ sưu tập ảnh", "help": "Kéo-thả sắp xếp. Không giới hạn số lượng." }
+            }
+        },
+        "guestbook": {
+            "label": "Sổ lưu bút",
+            "fields": {
+                "enabled": { "type": "boolean", "label": "Bật sổ lưu bút", "default": true },
+                "moderate": { "type": "boolean", "label": "Duyệt lời chúc trước khi hiển thị", "default": false },
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "Gửi Lời Chúc Mừng", "max": 60 },
+                "intro": { "type": "text", "label": "Mô tả", "max": 200 }
+            }
+        },
+        "rsvp": {
+            "label": "Xác nhận tham dự",
+            "fields": {
+                "enabled": { "type": "boolean", "label": "Bật form RSVP", "default": true },
+                "heading": { "type": "text", "label": "Tiêu đề", "default": "Xác Nhận Tham Dự", "max": 60 },
+                "intro": { "type": "text", "label": "Mô tả", "max": 200 },
+                "food_options": { "type": "text", "label": "Lựa chọn món (phân tách bởi dấu phẩy)", "max": 200, "default": "Mặn, Chay" }
+            }
+        },
+        "footer": {
+            "label": "Cuối trang",
+            "fields": {
+                "thanks": { "type": "text", "label": "Dòng cảm ơn (vd Thank You!)", "max": 60 },
+                "note": { "type": "textarea", "label": "Lời nhắn", "max": 300 },
+                "happy": { "type": "text", "label": "Dòng chữ cuối trang", "max": 160 }
+            }
+        },
+        "music": {
+            "label": "Nhạc nền",
+            "fields": {
+                "audio": { "type": "audio", "label": "File nhạc (mp3) — để trống dùng nhạc gốc" },
+                "autoplay": { "type": "boolean", "label": "Tự động phát", "default": true },
+                "loop": { "type": "boolean", "label": "Lặp lại", "default": true }
+            }
+        }
+    }
+}

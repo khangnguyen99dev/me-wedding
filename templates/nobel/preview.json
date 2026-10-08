@@ -1,0 +1,57 @@
+{
+    "settings": {
+        "hero": {
+            "logo": "@image:kane-monogram-400x400.png",
+            "groom_name": "Xuân Thịnh",
+            "bride_name": "Diễm Hằng",
+            "date": "24 - 03 - 2024",
+            "subtitle": "Gặp nhiều người ở thời điểm khác nhau cũng không huy hoàng bằng gặp đúng người đúng thời điểm."
+        },
+        "invite": {
+            "intro": "Trân trọng kính mời tới dự bữa cơm thân mật và chung vui cùng gia đình chúng tôi."
+        },
+        "couple": {
+            "groom_name": "Nguyễn Thịnh",
+            "groom_bio": "Là CEO của TiTuGroup, chuyên lĩnh vực quảng cáo và thương mại. Đến từ Nghệ An quê bác với nhiều nắng gió. Là người luôn tìm thấy điểm tích cực trong 1 điều tồi tệ.",
+            "groom_parents": "Bố: Nguyễn Xuân Dung\nMẹ: Nguyễn Thị Tuyết",
+            "bride_name": "Nghiêm Hằng",
+            "bride_bio": "Là bà chủ TMV Nghiêm Hằng, chuyên kiến tạo sắc đẹp cho phụ nữ Việt Nam. Xuất thân từ Bắc Giang nhiều tình cảm. Là 1 người vui vẻ, ít nói, hay cười.",
+            "bride_parents": "Bố: Nghiêm Tuấn Hợp\nMẹ: Nguyễn Thị Loan"
+        },
+        "story": {
+            "items": [
+                { "date": "Tháng 10 - 2021", "title": "Lần đầu gặp nhau", "content": "Tại 1 CTY nọ, chúng tôi có lần đầu chạm mặt, và như 1 tiếng sét ái tình tôi tin đây chính là TY của đời mình." },
+                { "date": "Tháng 10 - 2022", "title": "Tỏ Tình & Hẹn Hò", "content": "Tôi lấy hết dũng khí bày tỏ tình cảm và đã thành công. Chúng tôi có quãng thời gian hẹn hò vô cùng nồng nhiệt và nhiều cảm xúc." },
+                { "date": "Tháng 10 - 2023", "title": "Lời Cầu Hôn Bất Ngờ", "content": "Giây phút anh nói \"Làm vợ anh nhé\", em đã nguyện ý đời này, đi đâu cũng được, miễn là cùng anh!" },
+                { "date": "Tháng 03 - 2024", "title": "Ngày Lễ Thành hôn", "content": "Sau bao nhiêu chờ đợi, cuối cùng ngày vui của chúng ta cũng tới rồi. Cảm ơn vì mình đã luôn là một phần trong cuộc sống của nhau." }
+            ]
+        },
+        "events": {
+            "gai_time": "09 GIỜ 30",
+            "gai_lunar": "Nhằm ngày 14 tháng 02 năm Giáp Thìn",
+            "gai_venue": "TƯ GIA NHÀ GÁI",
+            "gai_address": "P.Chàng - Việt Tiến - Việt Yên - Bắc Giang",
+            "trai_time": "11 GIỜ 30",
+            "trai_venue": "TƯ GIA NHÀ TRAI",
+            "trai_address": "Xóm 9 - Diễn Thái - Diễn Châu - Nghệ An"
+        },
+        "gallery": {
+            "heading": "Album Ảnh Cưới",
+            "tagline": "Hãy để tình yêu diễn biến thật tự nhiên.",
+            "images": [
+                "@image:a7f07429-be6a-4674-93a4-d0a6d749e34c-20240609110815-flxom.jpg",
+                "@image:78910655-6a53-4ef1-8dc1-9a7b1606d621-20240609110815-nrbh0.jpg",
+                "@image:708ef29e-d4f7-4108-9f17-5f52930102e7-20240609110743-bjhdy.jpg",
+                "@image:7202a078-7582-48c5-8a68-71c2abc66b6d-20240609110756-xyhp6.jpg",
+                "@image:d27051ec-4366-4cde-89e7-03b57bf952db-20240609110757-clh5u.jpg",
+                "@image:fbcdb779-615f-4352-aa86-0a3a1f1b0b53-20240609110758-dkrg8.jpg",
+                "@image:fc08608d-50cc-431e-89a0-55c5c305f7de-20240609110816-ztt0f.jpg",
+                "@image:e961615d-e936-4e13-8af5-15fee251d4a3-20240609110757-ij5h1.jpg"
+            ]
+        },
+        "guestbook": { "enabled": true, "moderate": false, "heading": "Gửi Lời Chúc Mừng", "intro": "Để lại lời chúc tới cô dâu chú rể nhé!" },
+        "rsvp": { "enabled": true, "heading": "Xác Nhận Tham Dự", "intro": "Vui lòng xác nhận để chúng tôi chuẩn bị chu đáo.", "food_options": "Mặn, Chay" },
+        "music": { "autoplay": true, "loop": true }
+    },
+    "theme": {}
+}
