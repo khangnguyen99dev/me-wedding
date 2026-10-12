@@ -9,7 +9,7 @@ import { MEDIA_BUCKET, assetUrl, supabase } from '@/admin/lib/supabase';
  * `media` row records their URLs. Settings reference media by row id.
  */
 
-const IMAGE_MAX = 10 * 1024 * 1024;
+const IMAGE_MAX = 50 * 1024 * 1024;
 const AUDIO_MAX = 20 * 1024 * 1024;
 const AUDIO_TYPES = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/x-m4a', 'audio/mp4'];
 
@@ -67,7 +67,7 @@ export async function uploadMedia(invitationId: number, file: File, collection: 
     if (isAudio && !AUDIO_TYPES.includes(file.type)) throw new Error('Chỉ hỗ trợ file nhạc mp3, wav, ogg, m4a.');
     if (!isAudio && !file.type.startsWith('image/')) throw new Error('File không phải hình ảnh.');
     if (file.size > (isAudio ? AUDIO_MAX : IMAGE_MAX)) {
-        throw new Error(isAudio ? 'File nhạc tối đa 20MB.' : 'Ảnh tối đa 10MB.');
+        throw new Error(isAudio ? 'File nhạc tối đa 20MB.' : 'Ảnh tối đa 50MB.');
     }
 
     const dir = `${invitationId}/${crypto.randomUUID()}`;
