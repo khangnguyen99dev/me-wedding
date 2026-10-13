@@ -1,4 +1,4 @@
-import { REMOVED_IMAGE, dataGet, fieldValue, placeholderImage, resolveSettings } from './settings';
+import { REMOVED_IMAGE, coverOf, dataGet, fieldValue, placeholderImage, resolveSettings, toImage } from './settings';
 import type { LadiMap, MediaRow, RenderableInvitation, TemplateManifest } from './types';
 
 /**
@@ -70,7 +70,7 @@ export function renderLadiPage(input: RenderInput, opts: RenderOptions): string 
     const slotCss = customImageCss(manifest, settings, invitation.settings ?? {}, ownedFiles(ladi, settings));
     config.api = { url: opts.supabase.url, key: opts.supabase.anonKey };
 
-    const seo = seoData(invitation, settings, opts.origin);
+    const seo = seoData(invitation, settings, opts.origin, coverImage(invitation.settings, media, opts.assetBase));
 
     html = applyVideo(html, ladi, settings);
     html = applyBranding(html, seo);
@@ -360,7 +360,18 @@ function buildConfig(settings: Record<string, any>, ladi: LadiMap, timezone: str
     };
 }
 
-function seoData(invitation: RenderableInvitation, settings: Record<string, any>, origin: string): Seo {
+/**
+ * The invitation's card picture ("Ảnh đại diện thiệp") at web size, for link
+ * previews (Zalo / Facebook / Messenger want a large image, not the thumbnail).
+ */
+function coverImage(raw: Record<string, any> | null | undefined, media: MediaRow[], base: string): string | null {
+    const cover = coverOf(raw);
+    if (!cover) return null;
+    const row = media.find((m) => Number(m.id) === cover.id);
+    return row ? toImage(row, base).web : cover.thumb;
+}
+
+function seoData(invitation: RenderableInvitation, settings: Record<string, any>, origin: string, cover: string | null): Seo {
     const couple = [dataGet(settings, 'hero.groom_name'), dataGet(settings, 'hero.bride_name')]
         .filter(Boolean)
         .join(' & ')
@@ -373,7 +384,7 @@ function seoData(invitation: RenderableInvitation, settings: Record<string, any>
     const seo = {
         title: invitation.title || couple || 'Thiệp cưới',
         description: dataGet(settings, 'hero.subtitle') ?? 'Trân trọng kính mời!',
-        og_image: dataGet(settings, 'hero.background.web') ?? dataGet(settings, 'couple.groom_photo.web') ?? null,
+        og_image: cover ?? dataGet(settings, 'hero.background.web') ?? dataGet(settings, 'couple.groom_photo.web') ?? null,
         ...overrides,
     } as Seo;
 
