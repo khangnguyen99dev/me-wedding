@@ -67,9 +67,7 @@ export function renderLadiPage(input: RenderInput, opts: RenderOptions): string 
     const ladi = manifest.ladipage ?? {};
 
     const config = buildConfig(settings, ladi, opts.timezone);
-    const custom = customImageMap(manifest, settings, invitation.settings ?? {});
-    // Removed pictures go first so they also beat a field still showing the demo file.
-    config.images = { ...custom.removed, ...config.images, ...custom.replaced };
+    const slotCss = customImageCss(manifest, settings, invitation.settings ?? {});
     config.api = { url: opts.supabase.url, key: opts.supabase.anonKey };
 
     const seo = seoData(invitation, settings, opts.origin);
@@ -82,7 +80,7 @@ export function renderLadiPage(input: RenderInput, opts: RenderOptions): string 
         `<body data-slug="${escapeHtml(invitation.slug)}" data-invitation="${Number(invitation.id)}"`,
     );
 
-    html = html.replace('</head>', () => head(seo, opts) + '</head>');
+    html = html.replace('</head>', () => head(seo, opts) + slotCss + '</head>');
     html = html.replace('</body>', () => body(config) + '</body>');
 
     return html;
@@ -121,29 +119,42 @@ function applyBranding(html: string, seo: Seo): string {
     return html.replace(/<link[^>]*rel="[^"]*icon[^"]*"[^>]*>/gi, '');
 }
 
+/** A URL safe inside url("...") in a <style> block. */
+function cssUrl(url: string): string {
+    return url.replace(/["\\<>\n\r]/g, (c) => encodeURIComponent(c));
+}
+
 /**
- * Image maps for the auto-generated "custom_images" section (match path -> URL):
- * uploaded replacements, and pictures the couple removed (-> sized placeholder).
+ * The "custom_images" section, as CSS: each picture slot the couple replaced
+ * (or removed -> sized placeholder) overrides exactly the selectors that paint
+ * it, so one slot never affects another slot reusing the same template file.
+ * Swapped boxes fill their frame (LadiPage crops each box to the ORIGINAL photo).
+ * `:not(.ladi-lazyload)` keeps LadiPage's lazy loading working.
  */
-function customImageMap(
-    manifest: TemplateManifest,
-    settings: Record<string, any>,
-    raw: Record<string, any>,
-): { replaced: Record<string, string>; removed: Record<string, string> } {
-    const replaced: Record<string, string> = {};
-    const removed: Record<string, string> = {};
+function customImageCss(manifest: TemplateManifest, settings: Record<string, any>, raw: Record<string, any>): string {
+    const rules: string[] = [];
+    const fill: string[] = [];
+
     for (const [key, def] of Object.entries(manifest.sections?.custom_images?.fields ?? {})) {
-        if (!def.match) continue;
-        const paths = def.matches ?? [def.match];
-        if (fieldValue(raw.custom_images, key, def) === REMOVED_IMAGE) {
-            const placeholder = placeholderImage(def.width, def.height);
-            for (const p of paths) removed[p] = placeholder;
-            continue;
-        }
-        const url = dataGet(settings, `custom_images.${key}.web`) ?? dataGet(settings, `custom_images.${key}.full`);
-        if (url) for (const p of paths) replaced[p] = url;
+        if (!def.targets?.length) continue;
+        const url =
+            fieldValue(raw.custom_images, key, def) === REMOVED_IMAGE
+                ? placeholderImage(def.width, def.height)
+                : (dataGet(settings, `custom_images.${key}.web`) ?? dataGet(settings, `custom_images.${key}.full`));
+        if (!url) continue;
+
+        const targets = def.targets.map((sel) => `${sel}:not(.ladi-lazyload)`);
+        rules.push(`${targets.join(',')}{background-image:url("${cssUrl(url)}")!important}`);
+        fill.push(...def.targets.filter((sel) => sel.includes('ladi-image-background')));
     }
-    return { replaced, removed };
+
+    if (fill.length) {
+        rules.push(
+            `${fill.join(',')}{top:0!important;left:0!important;width:100%!important;height:100%!important;` +
+                'background-size:cover!important;background-position:center center!important}',
+        );
+    }
+    return rules.length ? `<style id="inv-images">${rules.join('')}</style>` : '';
 }
 
 /** Element ids of sections the couple switched off. Absent settings count as ON. */

@@ -68,45 +68,99 @@ function imageSize(path: string): { width: number; height: number } | null {
     return null;
 }
 
-const fieldKey = (rel: string) => 'img_' + createHash('md5').update(rel).digest('hex').slice(0, 12);
+const md5 = (text: string) => createHash('md5').update(text).digest('hex').slice(0, 12);
+
+/** Plain text of the first headline in an HTML fragment (section names in the editor). */
+function headline(html: string): string | null {
+    const m = html.match(/<h\d[^>]*class="ladi-headline[^"]*"[^>]*>([\s\S]*?)<\/h\d>/);
+    const text = m?.[1].replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+    return text ? text.slice(0, 40) : null;
+}
+
+/** Every CSS rule in the page's <style> blocks (nested @media included) as [selector, body]. */
+function cssRules(html: string): Array<[string, string]> {
+    const css = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map((m) => m[1]).join('\n');
+    const rules: Array<[string, string]> = [];
+    const stack: string[] = [];
+    let pos = 0;
+    for (const m of css.matchAll(/[{}]/g)) {
+        if (m[0] === '{') {
+            stack.push(css.slice(pos, m.index).trim());
+        } else {
+            const selector = stack.pop() ?? '';
+            if (!selector.startsWith('@')) rules.push([selector.replace(/\s+/g, ' '), css.slice(pos, m.index)]);
+        }
+        pos = m.index! + 1;
+    }
+    return rules;
+}
 
 /**
- * Synthetic "custom_images" section: one image field per picture the template
- * HTML references, so the couple can swap any of them. LadiPage exports the
- * same photo several times ("x.jpg", "x_1.jpg", "x_2.jpg": gallery thumbnail,
- * desktop/mobile view, crops); those variants are grouped into one field and
- * swapped together, otherwise a gallery thumbnail and its big view drift apart.
- * Field keys match the Laravel version (img_ + md5(path)[0..12]); the other
- * variants' keys are kept as `aliases` so older settings still apply.
+ * Synthetic "custom_images" section: one image field per picture SLOT of the
+ * template — an element (IMAGE12, a section background, ...) or one item of a
+ * gallery (GALLERY1 #3, its big view and its thumbnail together) — so every
+ * picture on the page can be swapped on its own. A slot lists the CSS selectors
+ * that paint it (desktop + mobile rules); the renderer overrides exactly those.
+ *
+ * Older settings keyed pictures by FILE (img_ + md5(path)): those keys are kept
+ * as `aliases` of every slot showing that file, so nothing already chosen is lost.
  */
 function imageSection(key: string): SectionDef | null {
     const html = readFileSync(join(TEMPLATES, key, 'index.html'), 'utf8');
-    const re = new RegExp(`templates/${key}/images/[^"'\\s)]+?\\.(?:png|jpe?g|gif|webp)`, 'gi');
+    const fileRe = new RegExp(`/(templates/${key}/images/[^"'\\s)]+?\\.(?:png|jpe?g|gif|webp))`, 'i');
 
-    const groups = new Map<string, string[]>();
-    for (const ref of new Set(html.match(re) ?? [])) {
-        const rel = ref.replace(/^\/+/, '');
-        const base = rel.replace(/_\d+(\.\w+)$/, '$1');
-        groups.set(base, [...(groups.get(base) ?? []), rel]);
+    // Section of each element id, and a readable name for each section.
+    const sections = [...html.matchAll(/<div id="(SECTION[\w-]*)"/g)].map((m) => ({ id: m[1], at: m.index! }));
+    const sectionOf = (id: string) => {
+        const at = html.indexOf(`id="${id}"`);
+        return at < 0 ? undefined : sections.filter((sec) => sec.at <= at).pop();
+    };
+    const sectionName = new Map<string, string>();
+    sections.forEach((sec, i) => {
+        const body = html.slice(sec.at, sections[i + 1]?.at ?? html.length);
+        sectionName.set(sec.id, sec.id === 'SECTION_POPUP' ? 'Popup' : (headline(body) ?? `Mục ${i + 1}`));
+    });
+
+    interface Slot { element: string; index: number | null; selectors: Set<string>; files: string[] }
+    const slots = new Map<string, Slot>();
+
+    for (const [selector, body] of cssRules(html)) {
+        if (!/background/.test(body)) continue;
+        const file = body.match(fileRe)?.[1];
+        if (!file) continue;
+        for (const sel of selector.split(',').map((x) => x.trim())) {
+            const element = sel.match(/#([\w-]+)/)?.[1];
+            if (!element || /::?(before|after)/.test(sel)) continue; // generic decoration (play icons, ...)
+            const item = sel.match(/gallery-(?:view|control)-item\[data-index="(\d+)"\]/);
+            const index = item ? Number(item[1]) : null;
+            const id = index === null ? element : `${element}:${index}`;
+            const slot = slots.get(id) ?? { element, index, selectors: new Set<string>(), files: [] };
+            slot.selectors.add(sel);
+            if (!slot.files.includes(file)) slot.files.push(file);
+            slots.set(id, slot);
+        }
     }
 
+    // Page order: by element position in the HTML, gallery items by index.
+    const ordered = [...slots].sort(([, a], [, b]) =>
+        html.indexOf(`id="${a.element}"`) - html.indexOf(`id="${b.element}"`) || (a.index ?? 0) - (b.index ?? 0),
+    );
+
     const fields: NonNullable<SectionDef['fields']> = {};
-    for (const [base, variants] of groups) {
-        // The un-suffixed file (else the first) represents the group.
-        variants.sort((a, b) => (a === base ? -1 : b === base ? 1 : a.localeCompare(b)));
-        const [main, ...rest] = variants;
-        // /templates/{key}/images/x.png is served from templates/{key}/assets/images/x.png
-        const sizes = variants
-            .map((rel) => imageSize(join(TEMPLATES, key, 'assets', rel.split('/').slice(2).join('/'))))
-            .filter((s): s is { width: number; height: number } => s !== null)
-            .sort((a, b) => b.width * b.height - a.width * a.height);
-        fields[fieldKey(main)] = {
+    for (const [id, slot] of ordered) {
+        const sec = sectionOf(slot.element);
+        // Largest variant is the best preview and the size the couple should aim for.
+        const sized = slot.files
+            .map((rel) => ({ rel, size: imageSize(join(TEMPLATES, key, 'assets', rel.split('/').slice(2).join('/'))) }))
+            .sort((a, b) => (b.size?.width ?? 0) * (b.size?.height ?? 0) - (a.size?.width ?? 0) * (a.size?.height ?? 0));
+        fields['img_' + md5(`${key}#${id}`)] = {
             type: 'image',
-            label: main.split('/').pop(),
-            original: '/' + main,
-            match: main,
-            ...(rest.length ? { matches: variants, aliases: rest.map(fieldKey) } : {}),
-            ...(sizes[0] ?? {}),
+            label: slot.index === null ? slot.element : `Ảnh ${slot.index + 1} (${slot.element})`,
+            group: sec ? sectionName.get(sec.id) : undefined,
+            original: '/' + sized[0].rel,
+            targets: [...slot.selectors],
+            aliases: slot.files.map((rel) => 'img_' + md5(rel)),
+            ...(sized[0].size ?? {}),
         };
     }
 

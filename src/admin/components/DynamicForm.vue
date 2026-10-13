@@ -19,11 +19,9 @@ function section(key: string): Record<string, any> {
     return props.modelValue?.[key] ?? {};
 }
 
-function setField(sectionKey: string, fieldKey: string, value: any, clear: string[] = []) {
+function setField(sectionKey: string, fieldKey: string, value: any) {
     const next = { ...(props.modelValue ?? {}) };
-    const section = { ...(next[sectionKey] ?? {}), [fieldKey]: value };
-    for (const k of clear) delete section[k];
-    next[sectionKey] = section;
+    next[sectionKey] = { ...(next[sectionKey] ?? {}), [fieldKey]: value };
     emit('update:modelValue', next);
 }
 
@@ -63,7 +61,7 @@ function groupedFields(def: SectionDef) {
                     v-if="def.ui === 'image_grid'"
                     :fields="def.fields ?? {}"
                     :values="section(key)"
-                    @change="setField(key, $event.key, $event.value, $event.clear)"
+                    @change="setField(key, $event.key, $event.value)"
                 />
 
                 <template v-else>

@@ -96,12 +96,15 @@ function hydrateImages() {
     // Image boxes whose picture was swapped: LadiPage sizes/offsets that box to
     // crop the ORIGINAL photo, which mis-frames any other photo — fill the frame instead.
     const fill = new Set<string>();
-    // CSS rules in the inline <style> blocks (LadiPage stores images here)
+    // CSS rules in the inline <style> blocks (LadiPage stores images here),
+    // including the desktop/mobile ones nested in @media blocks.
+    const allRules = (list: CSSRuleList): CSSRule[] =>
+        Array.from(list).flatMap((r) => ('cssRules' in r && !(r instanceof CSSStyleRule) ? allRules((r as CSSGroupingRule).cssRules) : [r]));
     for (const sheet of Array.from(document.styleSheets)) {
         let rules: CSSRuleList | undefined;
         try { rules = sheet.cssRules; } catch { continue; }
         if (!rules) continue;
-        for (const rule of Array.from(rules)) {
+        for (const rule of allRules(rules)) {
             const st = (rule as CSSStyleRule).style;
             if (!st || !st.backgroundImage || st.backgroundImage === 'none') continue;
             const url = swap(st.backgroundImage);

@@ -42,6 +42,28 @@ export function fieldValue(raw: Record<string, any> | null | undefined, key: str
 }
 
 /**
+ * Move values stored under alias keys (older per-file custom_images keys) onto
+ * the fields that now own them, and drop keys no field uses any more. After
+ * this the editor only ever deals with current field keys.
+ */
+export function adoptAliases(sections: Record<string, SectionDef>, settings: Record<string, any>): Record<string, any> {
+    const out = { ...(settings ?? {}) };
+    for (const [sectionKey, def] of Object.entries(sections ?? {})) {
+        const fields = def.fields ?? {};
+        const sec = out[sectionKey];
+        if (!sec || typeof sec !== 'object' || !Object.values(fields).some((f) => f.aliases?.length)) continue;
+
+        const next: Record<string, any> = {};
+        for (const [key, f] of Object.entries(fields)) {
+            const v = fieldValue(sec, key, f);
+            if (v != null) next[key] = v;
+        }
+        out[sectionKey] = next;
+    }
+    return out;
+}
+
+/**
  * Walk a template's section schema and turn the raw settings JSON into a
  * render-ready tree: media-id references become URL objects, galleries become
  * ordered lists of images, audio becomes a URL. The schema `default` stands in

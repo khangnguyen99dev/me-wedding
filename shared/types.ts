@@ -21,11 +21,9 @@ export interface FieldDef {
     options?: Array<{ value: string; label: string }>;
     /** custom_images grid: the shipped image URL shown as the current value. */
     original?: string;
-    /** custom_images grid: path the renderer matches to swap this image. */
-    match?: string;
-    /** custom_images grid: every variant path of this picture (thumbnail, mobile crop, ...), swapped together. */
-    matches?: string[];
-    /** custom_images grid: field keys the variants had before they were grouped (older settings may use them). */
+    /** custom_images grid: CSS selectors that paint this picture slot (desktop + mobile rules). */
+    targets?: string[];
+    /** custom_images grid: older per-file field keys whose stored value this slot inherits. */
     aliases?: string[];
     /** custom_images grid: pixel size of the shipped image (labels its placeholder). */
     width?: number;

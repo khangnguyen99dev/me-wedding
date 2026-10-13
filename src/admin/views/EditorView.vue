@@ -3,7 +3,7 @@ import { computed, onMounted, provide, reactive, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import { errorMessage, supabase } from '@/admin/lib/supabase';
 import { pruneMedia, pruneOrphanFiles, toMediaAudio, toMediaImage, uploadMedia } from '@/admin/lib/media';
-import { referencedMediaIds } from '@shared/settings';
+import { adoptAliases, referencedMediaIds } from '@shared/settings';
 import { useConfirm } from '@/admin/lib/confirm';
 import { useInvitationsStore } from '@/admin/stores/invitations';
 import { useTemplatesStore } from '@/admin/stores/templates';
@@ -80,7 +80,7 @@ async function load() {
         working.title = inv.title;
         working.slug = inv.slug;
         working.locale = inv.locale;
-        working.settings = JSON.parse(JSON.stringify(inv.settings ?? {}));
+        working.settings = adoptAliases(template.value?.sections ?? {}, JSON.parse(JSON.stringify(inv.settings ?? {})));
         working.theme = { ...(template.value?.theme ?? {}), ...(inv.theme ?? {}) };
         working.seo = { title: inv.seo?.title ?? '', description: inv.seo?.description ?? '' };
 
