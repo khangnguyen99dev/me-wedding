@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { provide, reactive } from 'vue';
+import { FormContextKey } from '@/admin/lib/mediaContext';
 import type { SectionDef } from '@/admin/lib/types';
 import FieldRenderer from '@/admin/components/fields/FieldRenderer.vue';
 import RepeaterField from '@/admin/components/fields/RepeaterField.vue';
@@ -10,6 +11,9 @@ const props = defineProps<{
     modelValue: Record<string, any>;
 }>();
 const emit = defineEmits<{ 'update:modelValue': [Record<string, any>] }>();
+
+// Whole-form access for fields that depend on other sections (calendar hearts).
+provide(FormContextKey, { sections: () => props.sections, settings: () => props.modelValue ?? {} });
 
 const open = reactive<Record<string, boolean>>(
     Object.fromEntries(Object.keys(props.sections).map((k, i) => [k, i === 0])),

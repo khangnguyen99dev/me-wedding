@@ -22,6 +22,8 @@ export interface FieldDef {
     options?: Array<{ value: string; label: string }>;
     /** markers: sibling image field (same section) the points sit on. */
     image?: string;
+    /** markers: page element showing that image (its "Ảnh trong mẫu" slot can replace it too). */
+    element?: string;
     /** markers: width / height of the page box that shows that image. */
     aspect?: number;
     /** custom_images grid / markers: the shipped image URL shown as the current value. */

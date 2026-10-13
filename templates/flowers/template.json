@@ -217,6 +217,7 @@
                     "type": "markers",
                     "label": "Trái tim trên lịch",
                     "image": "calendar_image",
+                    "element": "IMAGE19",
                     "aspect": 0.8897,
                     "original": "/templates/flowers/images/14-20240719053009-27sg6.png",
                     "default": [{ "x": 0.7652, "y": 0.5849 }],

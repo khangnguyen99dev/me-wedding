@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useMediaContext } from '@/admin/lib/mediaContext';
+import { computed, inject, onMounted, ref, watch } from 'vue';
+import { FormContextKey, useMediaContext } from '@/admin/lib/mediaContext';
+import { REMOVED_IMAGE } from '@shared/settings';
 import { findHighlightedDays } from '@/admin/lib/calendar';
 import type { FieldDef } from '@/admin/lib/types';
 
@@ -18,8 +19,25 @@ const media = useMediaContext();
 const detecting = ref(false);
 const note = ref('');
 
-const imageId = computed(() => (props.field.image ? props.siblings?.[props.field.image] : null));
-const imageUrl = computed(() => media.imageById(imageId.value)?.web ?? props.field.original ?? '');
+const form = inject(FormContextKey, null);
+
+/**
+ * What the page actually shows in that box: a replacement made in "Ảnh trong mẫu"
+ * (its CSS wins on the page), else the image field, else the template's picture.
+ */
+const slotValue = computed(() => {
+    const el = props.field.element;
+    const fields = form?.sections().custom_images?.fields ?? {};
+    const key = el && Object.keys(fields).find((k) => fields[k].targets?.some((t) => t.startsWith(`#${el}>`) || t.startsWith(`#${el} `)));
+    return key ? form?.settings().custom_images?.[key] : undefined;
+});
+const imageId = computed(() => {
+    if (typeof slotValue.value === 'number') return slotValue.value;
+    return props.field.image ? props.siblings?.[props.field.image] : null;
+});
+const imageUrl = computed(() =>
+    slotValue.value === REMOVED_IMAGE ? '' : (media.imageById(imageId.value)?.web ?? props.field.original ?? ''),
+);
 const boxStyle = computed(() => ({
     aspectRatio: String(props.field.aspect ?? 1),
     backgroundImage: imageUrl.value ? `url(${JSON.stringify(imageUrl.value)})` : undefined,
@@ -62,6 +80,13 @@ async function detect() {
 // A new calendar picture: find its highlighted day(s) straight away.
 watch(imageId, (id, old) => {
     if (id && id !== old) void detect();
+});
+
+// Hearts never placed but the couple's own calendar is in: place them now
+// (otherwise they'd sit where the TEMPLATE's calendar had its date).
+onMounted(() => {
+    const own = media.imageById(imageId.value);
+    if (isDefault.value && own && !own.web.includes('/templates/')) void detect();
 });
 </script>
 

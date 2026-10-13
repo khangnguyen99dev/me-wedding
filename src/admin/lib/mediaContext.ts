@@ -1,5 +1,5 @@
 import { inject, type InjectionKey, type Ref } from 'vue';
-import type { MediaAudio, MediaImage } from '@/admin/lib/types';
+import type { MediaAudio, MediaImage, SectionDef } from '@/admin/lib/types';
 
 export interface MediaContext {
     invitationId: number;
@@ -9,6 +9,14 @@ export interface MediaContext {
     imageById(id: number | null | undefined): MediaImage | undefined;
     audioById(id: number | null | undefined): MediaAudio | undefined;
 }
+
+/** The whole content form (sections schema + current settings), for cross-section fields. */
+export interface FormContext {
+    sections(): Record<string, SectionDef>;
+    settings(): Record<string, any>;
+}
+
+export const FormContextKey: InjectionKey<FormContext> = Symbol('form-context');
 
 export const MediaContextKey: InjectionKey<MediaContext> = Symbol('media-context');
 
