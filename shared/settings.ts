@@ -1,4 +1,4 @@
-import type { MediaRow, ResolvedImage, SectionDef } from './types';
+import type { FieldDef, MediaRow, ResolvedImage, SectionDef } from './types';
 
 /** Read a nested value with dot notation ("story.items.0.title"), like Laravel's data_get. */
 export function dataGet(target: unknown, path: string, fallback?: unknown): any {
@@ -31,6 +31,14 @@ export function toImage(m: MediaRow, base = ''): ResolvedImage {
         full: assetUrl(m.full_url, base),
         alt: m.alt ?? '',
     };
+}
+
+/** A field's stored value, falling back to its pre-grouping alias keys (custom_images). */
+export function fieldValue(raw: Record<string, any> | null | undefined, key: string, def: FieldDef): unknown {
+    const own = raw?.[key];
+    if (own != null || !def.aliases) return own;
+    for (const alias of def.aliases) if (raw?.[alias] != null) return raw[alias];
+    return own;
 }
 
 /**
@@ -81,7 +89,7 @@ export function resolveSettings(
         const resolved: Record<string, any> = {};
 
         for (const [key, f] of Object.entries(def.fields ?? {})) {
-            resolved[key] = field(f.type ?? 'text', raw[key], f.default);
+            resolved[key] = field(f.type ?? 'text', fieldValue(raw, key, f), f.default);
         }
 
         const itemFields = def.repeater?.item_fields;
@@ -126,7 +134,9 @@ export function remapMediaIds(
         if (!sec || typeof sec !== 'object') continue;
 
         for (const [key, f] of Object.entries(def.fields ?? {})) {
-            if (key in sec) sec[key] = map(f.type, sec[key]);
+            for (const k of [key, ...(f.aliases ?? [])]) {
+                if (k in sec) sec[k] = map(f.type, sec[k]);
+            }
         }
 
         const itemFields = def.repeater?.item_fields;
@@ -177,7 +187,7 @@ export function referencedMediaIds(sections: Record<string, SectionDef>, setting
         const sec = settings?.[sectionKey];
         if (!sec || typeof sec !== 'object') continue;
 
-        for (const [key, f] of Object.entries(def.fields ?? {})) add(f.type, sec[key]);
+        for (const [key, f] of Object.entries(def.fields ?? {})) add(f.type, fieldValue(sec, key, f));
 
         const itemFields = def.repeater?.item_fields;
         if (itemFields && Array.isArray(sec.items)) {

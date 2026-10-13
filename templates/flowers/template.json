@@ -134,7 +134,8 @@
             "BOX39": "dress.color_2_hex"
         },
         "toggles": {
-            "gift.enabled": ["SECTION15", "QRchure", "QRcodau"]
+            "gift.enabled": ["SECTION15", "QRchure", "QRcodau"],
+            "video.enabled": ["SECTION20", "video"]
         }
     },
     "theme": {},
@@ -194,6 +195,7 @@
         "video": {
             "label": "Video cưới",
             "fields": {
+                "enabled": { "type": "boolean", "label": "Hiện mục Video cưới", "default": true, "help": "Tắt sẽ ẩn khu vực \"Xem video cưới\" và popup video." },
                 "label": { "type": "text", "label": "Chữ trên nút mở video", "max": 120 },
                 "quote": { "type": "textarea", "label": "Câu trích dẫn", "max": 300 },
                 "poster": { "type": "image", "label": "Ảnh nền khu vực video" },

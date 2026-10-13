@@ -68,26 +68,45 @@ function imageSize(path: string): { width: number; height: number } | null {
     return null;
 }
 
+const fieldKey = (rel: string) => 'img_' + createHash('md5').update(rel).digest('hex').slice(0, 12);
+
 /**
- * Synthetic "custom_images" section: one image field per unique image the
- * template HTML references, so the couple can swap any picture. Field keys
- * match the Laravel version (img_ + md5(path)[0..12]) so existing data maps 1:1.
+ * Synthetic "custom_images" section: one image field per picture the template
+ * HTML references, so the couple can swap any of them. LadiPage exports the
+ * same photo several times ("x.jpg", "x_1.jpg", "x_2.jpg": gallery thumbnail,
+ * desktop/mobile view, crops); those variants are grouped into one field and
+ * swapped together, otherwise a gallery thumbnail and its big view drift apart.
+ * Field keys match the Laravel version (img_ + md5(path)[0..12]); the other
+ * variants' keys are kept as `aliases` so older settings still apply.
  */
 function imageSection(key: string): SectionDef | null {
     const html = readFileSync(join(TEMPLATES, key, 'index.html'), 'utf8');
     const re = new RegExp(`templates/${key}/images/[^"'\\s)]+?\\.(?:png|jpe?g|gif|webp)`, 'gi');
 
-    const fields: NonNullable<SectionDef['fields']> = {};
+    const groups = new Map<string, string[]>();
     for (const ref of new Set(html.match(re) ?? [])) {
         const rel = ref.replace(/^\/+/, '');
+        const base = rel.replace(/_\d+(\.\w+)$/, '$1');
+        groups.set(base, [...(groups.get(base) ?? []), rel]);
+    }
+
+    const fields: NonNullable<SectionDef['fields']> = {};
+    for (const [base, variants] of groups) {
+        // The un-suffixed file (else the first) represents the group.
+        variants.sort((a, b) => (a === base ? -1 : b === base ? 1 : a.localeCompare(b)));
+        const [main, ...rest] = variants;
         // /templates/{key}/images/x.png is served from templates/{key}/assets/images/x.png
-        const size = imageSize(join(TEMPLATES, key, 'assets', rel.split('/').slice(2).join('/')));
-        fields['img_' + createHash('md5').update(rel).digest('hex').slice(0, 12)] = {
+        const sizes = variants
+            .map((rel) => imageSize(join(TEMPLATES, key, 'assets', rel.split('/').slice(2).join('/'))))
+            .filter((s): s is { width: number; height: number } => s !== null)
+            .sort((a, b) => b.width * b.height - a.width * a.height);
+        fields[fieldKey(main)] = {
             type: 'image',
-            label: rel.split('/').pop(),
-            original: '/' + rel,
-            match: rel,
-            ...(size ?? {}),
+            label: main.split('/').pop(),
+            original: '/' + main,
+            match: main,
+            ...(rest.length ? { matches: variants, aliases: rest.map(fieldKey) } : {}),
+            ...(sizes[0] ?? {}),
         };
     }
 

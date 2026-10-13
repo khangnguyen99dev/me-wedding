@@ -3,13 +3,14 @@ import { computed, ref } from 'vue';
 import { useMediaContext } from '@/admin/lib/mediaContext';
 import { useToasts } from '@/admin/lib/toast';
 import type { FieldDef, MediaImage } from '@/admin/lib/types';
-import { REMOVED_IMAGE, placeholderImage } from '@shared/settings';
+import { REMOVED_IMAGE, fieldValue, placeholderImage } from '@shared/settings';
 
 const props = defineProps<{
     fields: Record<string, FieldDef>;
     values: Record<string, unknown>;
 }>();
-const emit = defineEmits<{ change: [{ key: string; value: number | typeof REMOVED_IMAGE | null }] }>();
+type Value = number | typeof REMOVED_IMAGE | null;
+const emit = defineEmits<{ change: [{ key: string; value: Value; clear: string[] }] }>();
 
 const media = useMediaContext();
 const toast = useToasts();
@@ -25,18 +26,28 @@ const items = computed(() =>
 
 /** Uploaded replacement (if any) wins, then a removed picture's placeholder, then the shipped original. */
 function preview(key: string, def: FieldDef): string {
-    const id = props.values?.[key];
+    const id = value(key);
     if (isRemoved(key)) return placeholderImage(def.width, def.height);
     const custom = typeof id === 'number' ? media.imageById(id) : null;
     return custom?.thumb ?? def.original ?? '';
 }
 
+/** Stored value, including one saved under a variant's old key. */
+function value(key: string): unknown {
+    return fieldValue(props.values, key, props.fields[key]);
+}
+
 function isReplaced(key: string): boolean {
-    return typeof props.values?.[key] === 'number';
+    return typeof value(key) === 'number';
 }
 
 function isRemoved(key: string): boolean {
-    return props.values?.[key] === REMOVED_IMAGE;
+    return value(key) === REMOVED_IMAGE;
+}
+
+/** Set a picture; values left under its variants' old keys are cleared so they cannot win back. */
+function set(key: string, v: Value) {
+    emit('change', { key, value: v, clear: props.fields[key]?.aliases ?? [] });
 }
 
 async function onPick(key: string, e: Event) {
@@ -45,7 +56,7 @@ async function onPick(key: string, e: Event) {
     busy.value = key;
     try {
         const m = (await media.upload(file, 'library')) as MediaImage;
-        emit('change', { key, value: m.id });
+        set(key, m.id);
     } catch {
         toast.error('Tải ảnh thất bại');
     } finally {
@@ -101,14 +112,14 @@ async function onPick(key: string, e: Event) {
                         v-if="isReplaced(it.key) || isRemoved(it.key)"
                         type="button"
                         class="rounded px-2 py-1 text-xs text-gray-500 hover:bg-gray-100"
-                        @click="emit('change', { key: it.key, value: null })"
+                        @click="set(it.key, null)"
                     >Khôi phục</button>
                     <button
                         v-else
                         type="button"
                         class="rounded px-2 py-1 text-xs text-rose-600 hover:bg-rose-50"
                         title="Thay ảnh mẫu bằng khung trống có ghi kích thước"
-                        @click="emit('change', { key: it.key, value: REMOVED_IMAGE })"
+                        @click="set(it.key, REMOVED_IMAGE)"
                     >Xoá</button>
                 </div>
                 <input

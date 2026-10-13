@@ -1,4 +1,4 @@
-import { REMOVED_IMAGE, dataGet, placeholderImage, resolveSettings } from './settings';
+import { REMOVED_IMAGE, dataGet, fieldValue, placeholderImage, resolveSettings } from './settings';
 import type { LadiMap, MediaRow, RenderableInvitation, TemplateManifest } from './types';
 
 /**
@@ -134,12 +134,14 @@ function customImageMap(
     const removed: Record<string, string> = {};
     for (const [key, def] of Object.entries(manifest.sections?.custom_images?.fields ?? {})) {
         if (!def.match) continue;
-        if (dataGet(raw, `custom_images.${key}`) === REMOVED_IMAGE) {
-            removed[def.match] = placeholderImage(def.width, def.height);
+        const paths = def.matches ?? [def.match];
+        if (fieldValue(raw.custom_images, key, def) === REMOVED_IMAGE) {
+            const placeholder = placeholderImage(def.width, def.height);
+            for (const p of paths) removed[p] = placeholder;
             continue;
         }
         const url = dataGet(settings, `custom_images.${key}.web`) ?? dataGet(settings, `custom_images.${key}.full`);
-        if (url) replaced[def.match] = url;
+        if (url) for (const p of paths) replaced[p] = url;
     }
     return { replaced, removed };
 }

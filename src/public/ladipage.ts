@@ -91,6 +91,11 @@ function hydrateImages() {
         for (const [fn, url] of entries) if (val.includes(fn)) return url;
         return null;
     };
+    /** A different picture (not the template's own file mapped back to itself). */
+    const isNew = (val: string, url: string): boolean => !val.includes(url.split('/').pop() ?? url);
+    // Image boxes whose picture was swapped: LadiPage sizes/offsets that box to
+    // crop the ORIGINAL photo, which mis-frames any other photo — fill the frame instead.
+    const fill = new Set<string>();
     // CSS rules in the inline <style> blocks (LadiPage stores images here)
     for (const sheet of Array.from(document.styleSheets)) {
         let rules: CSSRuleList | undefined;
@@ -100,17 +105,33 @@ function hydrateImages() {
             const st = (rule as CSSStyleRule).style;
             if (!st || !st.backgroundImage || st.backgroundImage === 'none') continue;
             const url = swap(st.backgroundImage);
-            if (url) st.backgroundImage = `url("${url}")`;
+            if (!url) continue;
+            const sel = (rule as CSSStyleRule).selectorText ?? '';
+            if (sel.includes('ladi-image-background') && isNew(st.backgroundImage, url)) fill.add(sel);
+            st.backgroundImage = `url("${url}")`;
         }
+    }
+    if (fill.size) {
+        const style = document.createElement('style');
+        style.textContent = `${[...fill].join(',')}{top:0!important;left:0!important;width:100%!important;height:100%!important;` +
+            'background-size:cover!important;background-position:center center!important}';
+        document.head.appendChild(style);
     }
     // inline styles + <img>
     document.querySelectorAll<HTMLElement>('[style*="background-image"]').forEach((el) => {
         const url = swap(el.style.backgroundImage);
-        if (url) el.style.backgroundImage = `url("${url}")`;
+        if (!url) return;
+        if (isNew(el.style.backgroundImage, url)) {
+            el.style.backgroundSize = 'cover';
+            el.style.backgroundPosition = 'center center';
+        }
+        el.style.backgroundImage = `url("${url}")`;
     });
     document.querySelectorAll('img').forEach((img) => {
         const url = swap(img.src);
-        if (url) img.src = url;
+        if (!url) return;
+        if (isNew(img.src, url)) img.style.objectFit = 'cover';
+        img.src = url;
     });
 }
 
@@ -238,10 +259,10 @@ function injectGuestbook() {
         <h2 class="inv-injected__title">${b.heading ?? 'Gửi Lời Chúc'}</h2>
         ${b.intro ? `<p class="inv-injected__sub">${b.intro}</p>` : ''}
         <form class="inv-pubform" data-guestbook-form>
-            <div class="inv-pubform__row">
-                <input name="name" placeholder="Họ và tên" required maxlength="80">
-                <select name="emoji" style="max-width:84px"><option value="❤️">❤️</option><option value="🎉">🎉</option><option value="🥰">🥰</option><option value="🌸">🌸</option></select>
-            </div>
+            <input name="name" placeholder="Họ và tên" required maxlength="80">
+            <div class="inv-emoji" role="radiogroup" aria-label="Biểu tượng">${['❤️', '🎉', '🥰', '🌸', '💐', '🥂']
+                .map((e, i) => `<label><input type="radio" name="emoji" value="${e}"${i ? '' : ' checked'}><span>${e}</span></label>`)
+                .join('')}</div>
             <textarea name="message" placeholder="Lời chúc của bạn..." required maxlength="500"></textarea>
             <button type="submit">Gửi lời chúc</button>
             <p data-form-msg style="text-align:center;min-height:1.2em"></p>

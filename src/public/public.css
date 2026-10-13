@@ -201,6 +201,47 @@ img {
     color: inherit;
 }
 .inv-pubform textarea { min-height: 92px; resize: vertical; }
+.inv-pubform select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 40px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23999' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px 8px;
+}
+.inv-pubform input:focus,
+.inv-pubform select:focus,
+.inv-pubform textarea:focus {
+    outline: none;
+    border-color: var(--inv-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--inv-primary) 18%, transparent);
+}
+
+/* Guestbook emoji picker: a row of chips instead of a dropdown. */
+.inv-emoji { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.inv-emoji label { cursor: pointer; }
+.inv-emoji input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.inv-emoji span {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 22px;
+    line-height: 1;
+    background: #fff;
+    border: 1px solid color-mix(in srgb, var(--inv-primary) 35%, #ddd);
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.inv-emoji label:hover span { transform: scale(1.08); }
+.inv-emoji input:checked + span {
+    border-color: var(--inv-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--inv-primary) 22%, transparent);
+    transform: scale(1.1);
+}
+.inv-emoji input:focus-visible + span { outline: 2px solid var(--inv-primary); outline-offset: 2px; }
 .inv-pubform__row { display: flex; gap: 12px; }
 .inv-pubform__row > * { flex: 1; }
 .inv-pubform button {

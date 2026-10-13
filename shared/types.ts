@@ -23,6 +23,10 @@ export interface FieldDef {
     original?: string;
     /** custom_images grid: path the renderer matches to swap this image. */
     match?: string;
+    /** custom_images grid: every variant path of this picture (thumbnail, mobile crop, ...), swapped together. */
+    matches?: string[];
+    /** custom_images grid: field keys the variants had before they were grouped (older settings may use them). */
+    aliases?: string[];
     /** custom_images grid: pixel size of the shipped image (labels its placeholder). */
     width?: number;
     height?: number;
