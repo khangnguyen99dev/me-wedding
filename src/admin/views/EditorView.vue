@@ -3,7 +3,8 @@ import { computed, onMounted, provide, reactive, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import { errorMessage, supabase } from '@/admin/lib/supabase';
 import { pruneMedia, pruneOrphanFiles, toMediaAudio, toMediaImage, uploadMedia } from '@/admin/lib/media';
-import { adoptAliases, referencedMediaIds } from '@shared/settings';
+import { COVER_KEY, adoptAliases, coverOf, referencedMediaIds } from '@shared/settings';
+import ImageField from '@/admin/components/fields/ImageField.vue';
 import { useConfirm } from '@/admin/lib/confirm';
 import { useInvitationsStore } from '@/admin/stores/invitations';
 import { useTemplatesStore } from '@/admin/stores/templates';
@@ -121,7 +122,9 @@ watch([() => working.settings, () => working.theme], schedulePreview, { deep: tr
 /** Media ids used by any of these settings snapshots. */
 function usedIds(...snapshots: Record<string, any>[]): Set<number> {
     const sections = template.value?.sections ?? {};
-    return new Set(snapshots.flatMap((s) => [...referencedMediaIds(sections, s)]));
+    return new Set(
+        snapshots.flatMap((s) => [...referencedMediaIds(sections, s), ...(coverOf(s) ? [coverOf(s)!.id] : [])]),
+    );
 }
 
 /** Drop media rows (and files) no snapshot uses; keep the local pickers in sync. */
@@ -199,6 +202,16 @@ async function togglePublish() {
         toast.error(errorMessage(e));
     }
 }
+
+/** The invitation's own card picture (lists / dashboard), stored as { id, thumb } in settings. */
+const cover = computed({
+    get: () => coverOf(working.settings)?.id ?? null,
+    set: (id: number | null) => {
+        const m = id ? images.value[id] : undefined;
+        if (m) working.settings[COVER_KEY] = { id: m.id, thumb: m.thumb };
+        else delete working.settings[COVER_KEY];
+    },
+});
 
 const tabs = computed<{ key: Tab; label: string }[]>(() => {
     const hasTheme = template.value && Object.keys(template.value.theme_schema ?? {}).length > 0;
@@ -278,6 +291,11 @@ onMounted(load);
                     <div class="space-y-1.5">
                         <label class="block text-sm font-medium text-gray-700">Tên thiệp</label>
                         <input v-model="working.title" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none" />
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-medium text-gray-700">Ảnh đại diện thiệp</label>
+                        <ImageField v-model="cover" />
+                        <p class="text-xs text-gray-400">Hiện ở danh sách thiệp và trang tổng quan, thay cho ảnh của mẫu.</p>
                     </div>
                     <div class="space-y-1.5">
                         <label class="block text-sm font-medium text-gray-700">Đường dẫn (slug)</label>

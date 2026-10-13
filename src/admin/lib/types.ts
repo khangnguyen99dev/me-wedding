@@ -62,6 +62,8 @@ export interface InvitationListItem {
     view_count: number;
     public_url: string;
     template: { key: string | null; name: string | null; thumbnail: string | null };
+    /** The invitation's own card picture (falls back to the template thumbnail). */
+    cover: string | null;
     counts: { rsvps: number; guestbook: number };
     updated_at: string;
 }

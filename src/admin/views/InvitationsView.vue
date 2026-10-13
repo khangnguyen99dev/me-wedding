@@ -16,6 +16,22 @@ const search = ref('');
 const status = ref('');
 
 const page = ref(1);
+const coverBusy = ref<number | null>(null);
+const coverInputs = ref<Record<number, HTMLInputElement | null>>({});
+
+async function changeCover(id: number, file: File | null) {
+    coverBusy.value = id;
+    try {
+        await store.setCover(id, file);
+        toast.success(file ? 'Đã đổi ảnh đại diện' : 'Đã gỡ ảnh đại diện');
+    } catch (e) {
+        toast.error(errorMessage(e, 'Không đổi được ảnh'));
+    } finally {
+        coverBusy.value = null;
+        const el = coverInputs.value[id];
+        if (el) el.value = '';
+    }
+}
 
 function load(p = 1) {
     page.value = p;
@@ -80,8 +96,35 @@ onMounted(() => load());
 
         <div v-else class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <div v-for="inv in store.items" :key="inv.id" class="flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-                <div class="relative aspect-video bg-gray-100">
-                    <img v-if="inv.template.thumbnail" :src="inv.template.thumbnail" class="h-full w-full object-cover" alt="" />
+                <div class="group relative aspect-video bg-gray-100">
+                    <img v-if="inv.cover || inv.template.thumbnail" :src="inv.cover || inv.template.thumbnail!" class="h-full w-full object-cover" alt="" />
+                    <div
+                        class="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition group-hover:opacity-100"
+                        :class="{ 'opacity-100': coverBusy === inv.id }"
+                    >
+                        <span v-if="coverBusy === inv.id" class="text-xs font-medium text-white">Đang tải...</span>
+                        <template v-else>
+                            <button
+                                type="button"
+                                class="rounded-md bg-white/90 px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-white"
+                                @click="coverInputs[inv.id]?.click()"
+                            >Đổi ảnh</button>
+                            <button
+                                v-if="inv.cover"
+                                type="button"
+                                class="rounded-md bg-white/90 px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-white"
+                                title="Dùng lại ảnh của mẫu"
+                                @click="changeCover(inv.id, null)"
+                            >Gỡ</button>
+                        </template>
+                    </div>
+                    <input
+                        :ref="(el) => (coverInputs[inv.id] = el as HTMLInputElement | null)"
+                        type="file"
+                        accept="image/*"
+                        class="hidden"
+                        @change="(e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) changeCover(inv.id, f); }"
+                    />
                     <span class="absolute top-2 right-2 rounded-full px-2.5 py-1 text-xs font-medium" :class="inv.status === 'published' ? 'bg-emerald-600 text-white' : 'bg-gray-700/80 text-white'">
                         {{ inv.status === 'published' ? 'Đã xuất bản' : 'Nháp' }}
                     </span>

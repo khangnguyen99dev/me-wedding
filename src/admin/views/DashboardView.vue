@@ -53,7 +53,7 @@ onMounted(() => store.fetchAll({ per_page: 50 }));
                 class="flex items-center justify-between rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition hover:shadow-md"
             >
                 <div class="flex items-center gap-3">
-                    <img v-if="inv.template.thumbnail" :src="inv.template.thumbnail" class="h-12 w-12 rounded-lg object-cover" alt="" />
+                    <img v-if="inv.cover || inv.template.thumbnail" :src="inv.cover || inv.template.thumbnail!" class="h-12 w-12 rounded-lg object-cover" alt="" />
                     <div>
                         <p class="font-medium text-gray-900">{{ inv.title }}</p>
                         <p class="text-xs text-gray-400">/{{ inv.slug }} · {{ inv.template.name }}</p>

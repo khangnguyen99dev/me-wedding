@@ -221,3 +221,14 @@ export function referencedMediaIds(sections: Record<string, SectionDef>, setting
 
     return ids;
 }
+
+/**
+ * The invitation's own card picture (admin lists), kept in settings so it needs
+ * no extra column: { id: media row id, thumb: its thumbnail URL }.
+ */
+export const COVER_KEY = 'invitation_cover';
+
+export function coverOf(settings: Record<string, any> | null | undefined): { id: number; thumb: string } | null {
+    const c = settings?.[COVER_KEY];
+    return c && Number.isInteger(Number(c.id)) && typeof c.thumb === 'string' ? { id: Number(c.id), thumb: c.thumb } : null;
+}

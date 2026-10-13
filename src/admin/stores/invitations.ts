@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { remapMediaIds } from '@shared/settings';
+import { COVER_KEY, coverOf, referencedMediaIds, remapMediaIds } from '@shared/settings';
 import type { MediaRow, SectionDef } from '@shared/types';
 import { MEDIA_BUCKET, assetUrl, publicUrl, slugify, supabase } from '@/admin/lib/supabase';
-import { removeStorage, toMediaAudio, toMediaImage } from '@/admin/lib/media';
+import { removeStorage, toMediaAudio, toMediaImage, uploadMedia } from '@/admin/lib/media';
 import type { Invitation, InvitationListItem, PageMeta } from '@/admin/lib/types';
 
 const LIST_COLUMNS =
-    'id, title, slug, status, published_at, view_count, updated_at, template_key, ' +
+    'id, title, slug, status, published_at, view_count, updated_at, template_key, cover:settings->invitation_cover, ' +
     'templates(name, thumbnail), rsvps(count), guestbook_messages(count)';
 
 function toListItem(row: any): InvitationListItem {
@@ -24,6 +24,7 @@ function toListItem(row: any): InvitationListItem {
             name: row.templates?.name ?? null,
             thumbnail: row.templates?.thumbnail ? assetUrl(row.templates.thumbnail) : null,
         },
+        cover: coverOf({ [COVER_KEY]: row.cover })?.thumb ?? null,
         counts: { rsvps: row.rsvps?.[0]?.count ?? 0, guestbook: row.guestbook_messages?.[0]?.count ?? 0 },
         updated_at: row.updated_at,
     };
@@ -217,7 +218,7 @@ export const useInvitationsStore = defineStore('invitations', () => {
             .insert({
                 user_id: auth.user?.id,
                 template_key: src.template_key,
-                title: `${src.title} (Bản sao)`.slice(0, 120),
+                title: src.title,
                 slug: await uniqueSlug(src.slug),
                 locale: src.locale,
                 settings: {},
@@ -229,6 +230,7 @@ export const useInvitationsStore = defineStore('invitations', () => {
         if (cErr) throw cErr;
 
         const idMap = new Map<number, number>();
+        const thumbs = new Map<number, string>();
         const bucket = supabase.storage.from(MEDIA_BUCKET);
 
         for (const m of (src.media ?? []) as MediaRow[]) {
@@ -263,16 +265,55 @@ export const useInvitationsStore = defineStore('invitations', () => {
             const { data: created, error: mErr } = await supabase.from('media').insert(row).select('id').single();
             if (mErr) throw mErr;
             idMap.set(m.id, created.id);
+            thumbs.set(created.id, (row.thumb_url ?? row.full_url) as string);
         }
 
         const sections = ((src.templates as any)?.manifest?.sections ?? {}) as Record<string, SectionDef>;
-        const { error: uErr } = await supabase
-            .from('invitations')
-            .update({ settings: remapMediaIds(sections, src.settings ?? {}, idMap) })
-            .eq('id', copy.id);
+        const settings = remapMediaIds(sections, src.settings ?? {}, idMap);
+        const cover = coverOf(src.settings);
+        const coverId = cover ? idMap.get(cover.id) : undefined;
+        if (coverId) settings[COVER_KEY] = { id: coverId, thumb: thumbs.get(coverId) };
+        else delete settings[COVER_KEY];
+
+        const { error: uErr } = await supabase.from('invitations').update({ settings }).eq('id', copy.id);
         if (uErr) throw uErr;
 
         return fetchOne(copy.id);
+    }
+
+    /**
+     * Set (file) or clear (null) the invitation's card picture. The previous
+     * picture is deleted unless the invitation's content still uses it.
+     */
+    async function setCover(id: number, file: File | null): Promise<void> {
+        const { data: inv, error } = await supabase
+            .from('invitations')
+            .select('settings, templates(manifest)')
+            .eq('id', id)
+            .single();
+        if (error) throw error;
+
+        const settings = { ...((inv.settings ?? {}) as Record<string, any>) };
+        const old = coverOf(settings);
+        if (file) {
+            const m = await uploadMedia(id, file, 'library');
+            settings[COVER_KEY] = { id: m.id, thumb: m.thumb_url || m.full_url };
+        } else {
+            delete settings[COVER_KEY];
+        }
+
+        const { error: uErr } = await supabase.from('invitations').update({ settings }).eq('id', id);
+        if (uErr) throw uErr;
+
+        const sections = ((inv.templates as any)?.manifest?.sections ?? {}) as Record<string, SectionDef>;
+        if (old && old.id !== coverOf(settings)?.id && !referencedMediaIds(sections, settings).has(old.id)) {
+            const { data: rows } = await supabase.from('media').select('id, storage_paths').eq('id', old.id);
+            await removeStorage(rows ?? []);
+            await supabase.from('media').delete().eq('id', old.id);
+        }
+
+        const item = items.value.find((i) => i.id === id);
+        if (item) item.cover = coverOf(settings)?.thumb ?? null;
     }
 
     async function setPublished(id: number, publish: boolean): Promise<Invitation> {
@@ -287,5 +328,5 @@ export const useInvitationsStore = defineStore('invitations', () => {
         return updated;
     }
 
-    return { items, meta, loading, fetchAll, fetchOne, create, update, remove, duplicate, setPublished };
+    return { items, meta, loading, fetchAll, fetchOne, create, update, remove, duplicate, setCover, setPublished };
 });
