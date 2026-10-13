@@ -23,6 +23,9 @@ export interface FieldDef {
     original?: string;
     /** custom_images grid: path the renderer matches to swap this image. */
     match?: string;
+    /** custom_images grid: pixel size of the shipped image (labels its placeholder). */
+    width?: number;
+    height?: number;
 }
 
 export interface RepeaterDef {

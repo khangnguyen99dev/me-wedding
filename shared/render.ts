@@ -1,4 +1,4 @@
-import { dataGet, resolveSettings } from './settings';
+import { REMOVED_IMAGE, dataGet, placeholderImage, resolveSettings } from './settings';
 import type { LadiMap, MediaRow, RenderableInvitation, TemplateManifest } from './types';
 
 /**
@@ -67,7 +67,9 @@ export function renderLadiPage(input: RenderInput, opts: RenderOptions): string 
     const ladi = manifest.ladipage ?? {};
 
     const config = buildConfig(settings, ladi, opts.timezone);
-    config.images = { ...config.images, ...customImageMap(manifest, settings) };
+    const custom = customImageMap(manifest, settings, invitation.settings ?? {});
+    // Removed pictures go first so they also beat a field still showing the demo file.
+    config.images = { ...custom.removed, ...config.images, ...custom.replaced };
     config.api = { url: opts.supabase.url, key: opts.supabase.anonKey };
 
     const seo = seoData(invitation, settings, opts.origin);
@@ -119,15 +121,27 @@ function applyBranding(html: string, seo: Seo): string {
     return html.replace(/<link[^>]*rel="[^"]*icon[^"]*"[^>]*>/gi, '');
 }
 
-/** Image map for the auto-generated "custom_images" section: match path -> uploaded URL. */
-function customImageMap(manifest: TemplateManifest, settings: Record<string, any>): Record<string, string> {
-    const map: Record<string, string> = {};
+/**
+ * Image maps for the auto-generated "custom_images" section (match path -> URL):
+ * uploaded replacements, and pictures the couple removed (-> sized placeholder).
+ */
+function customImageMap(
+    manifest: TemplateManifest,
+    settings: Record<string, any>,
+    raw: Record<string, any>,
+): { replaced: Record<string, string>; removed: Record<string, string> } {
+    const replaced: Record<string, string> = {};
+    const removed: Record<string, string> = {};
     for (const [key, def] of Object.entries(manifest.sections?.custom_images?.fields ?? {})) {
         if (!def.match) continue;
+        if (dataGet(raw, `custom_images.${key}`) === REMOVED_IMAGE) {
+            removed[def.match] = placeholderImage(def.width, def.height);
+            continue;
+        }
         const url = dataGet(settings, `custom_images.${key}.web`) ?? dataGet(settings, `custom_images.${key}.full`);
-        if (url) map[def.match] = url;
+        if (url) replaced[def.match] = url;
     }
-    return map;
+    return { replaced, removed };
 }
 
 /** Element ids of sections the couple switched off. Absent settings count as ON. */

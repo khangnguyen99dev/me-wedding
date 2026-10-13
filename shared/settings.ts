@@ -141,3 +141,51 @@ export function remapMediaIds(
 
     return out;
 }
+
+/** custom_images value meaning "the couple removed this template picture": a placeholder is shown instead. */
+export const REMOVED_IMAGE = 'none';
+
+/**
+ * Grey placeholder as an SVG data URI, labelled with the picture's size
+ * ("1200 × 800") so the couple knows what to upload. Costs no storage.
+ */
+export function placeholderImage(width?: number, height?: number): string {
+    const w = width && width > 0 ? Math.round(width) : 800;
+    const h = height && height > 0 ? Math.round(height) : 600;
+    const label = width && height ? `${w} × ${h}` : 'Ảnh';
+    const size = Math.max(12, Math.round(Math.min(w, h) / 8));
+    const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">` +
+        `<rect width="100%" height="100%" fill="#e5e7eb"/>` +
+        `<text x="50%" y="50%" fill="#9ca3af" font-family="sans-serif" font-size="${size}" ` +
+        `text-anchor="middle" dominant-baseline="central">${label}</text></svg>`;
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+/** Ids of every media row the settings point at (image/gallery/audio fields only). */
+export function referencedMediaIds(sections: Record<string, SectionDef>, settings: Record<string, any>): Set<number> {
+    const ids = new Set<number>();
+    const add = (type: string, value: unknown) => {
+        const list = type === 'gallery' && Array.isArray(value) ? value : type === 'image' || type === 'audio' ? [value] : [];
+        for (const v of list) {
+            const n = Number(v);
+            if (v != null && v !== '' && Number.isInteger(n) && n > 0) ids.add(n);
+        }
+    };
+
+    for (const [sectionKey, def] of Object.entries(sections ?? {})) {
+        const sec = settings?.[sectionKey];
+        if (!sec || typeof sec !== 'object') continue;
+
+        for (const [key, f] of Object.entries(def.fields ?? {})) add(f.type, sec[key]);
+
+        const itemFields = def.repeater?.item_fields;
+        if (itemFields && Array.isArray(sec.items)) {
+            for (const item of sec.items) {
+                for (const [key, f] of Object.entries(itemFields)) add(f.type, item?.[key]);
+            }
+        }
+    }
+
+    return ids;
+}

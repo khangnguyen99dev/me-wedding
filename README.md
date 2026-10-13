@@ -115,5 +115,8 @@ Upload thư mục `templates/{key}/assets/*` lên đường dẫn `/templates/{k
 ## Ghi chú
 - Chỉ engine `ladipage` được port, vì cả 3 mẫu đều dùng engine này. Engine Blade của bản cũ không còn.
 - Xoá thiệp là **xoá vĩnh viễn**, kèm toàn bộ file trong Storage. Bản cũ dùng soft delete.
+- Tiết kiệm Storage: không lưu ảnh gốc (chỉ `web` ≤1920px và `thumb`; GIF giữ nguyên). Tải file trùng tên
+  trong cùng thiệp sẽ dùng lại ảnh cũ. Khi **Lưu**, ảnh/nhạc không còn dùng bị xoá; nút **Dọn ảnh không dùng**
+  xoá thêm cả file rác. Ảnh mẫu trong "Ảnh trong mẫu" có thể **Xoá**, trang sẽ hiện khung xám ghi kích thước.
 - Dữ liệu cũ trong MySQL **không** tự chuyển sang. Key của các ô ảnh `custom_images` (`img_<md5>`) giữ
   nguyên như bản Laravel, nên nếu cần import thì `settings` dùng lại được, chỉ phải map lại media id.

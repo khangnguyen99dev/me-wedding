@@ -2,7 +2,9 @@
 import { computed, onMounted, provide, reactive, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 import { errorMessage, supabase } from '@/admin/lib/supabase';
-import { toMediaAudio, toMediaImage, uploadMedia } from '@/admin/lib/media';
+import { pruneMedia, pruneOrphanFiles, toMediaAudio, toMediaImage, uploadMedia } from '@/admin/lib/media';
+import { referencedMediaIds } from '@shared/settings';
+import { useConfirm } from '@/admin/lib/confirm';
 import { useInvitationsStore } from '@/admin/stores/invitations';
 import { useTemplatesStore } from '@/admin/stores/templates';
 import { useToasts } from '@/admin/lib/toast';
@@ -20,6 +22,9 @@ const invitation = ref<Invitation | null>(null);
 const template = ref<Template | null>(null);
 const loading = ref(true);
 const saving = ref(false);
+const cleaning = ref(false);
+/** Uploads in flight: their files exist before their row is referenced, so clean-up waits. */
+const uploads = ref(0);
 const previewHtml = ref('');
 type Tab = 'content' | 'theme' | 'seo' | 'settings';
 const tab = ref<Tab>('content');
@@ -44,6 +49,7 @@ const mediaCtx: MediaContext = {
     imageById: (id) => (id ? images.value[id] : undefined),
     audioById: (id) => (id ? audio.value[id] : undefined),
     async upload(file, collection) {
+        uploads.value++;
         try {
             const row = await uploadMedia(Number(props.id), file, collection);
             if (collection === 'audio') {
@@ -57,6 +63,8 @@ const mediaCtx: MediaContext = {
         } catch (e) {
             toast.error(errorMessage(e, 'Tải tệp thất bại'));
             throw e;
+        } finally {
+            uploads.value--;
         }
     },
 };
@@ -110,6 +118,45 @@ async function pushPreview() {
 
 watch([() => working.settings, () => working.theme], schedulePreview, { deep: true });
 
+/** Media ids used by any of these settings snapshots. */
+function usedIds(...snapshots: Record<string, any>[]): Set<number> {
+    const sections = template.value?.sections ?? {};
+    return new Set(snapshots.flatMap((s) => [...referencedMediaIds(sections, s)]));
+}
+
+/** Drop media rows (and files) no snapshot uses; keep the local pickers in sync. */
+async function prune(keep: Set<number>): Promise<number> {
+    const removed = await pruneMedia(Number(props.id), keep);
+    if (removed) {
+        images.value = Object.fromEntries(Object.entries(images.value).filter(([id]) => keep.has(Number(id))));
+        audio.value = Object.fromEntries(Object.entries(audio.value).filter(([id]) => keep.has(Number(id))));
+    }
+    return removed;
+}
+
+/** "Dọn ảnh không dùng": unused media rows + stray files, keeping what the saved page or the draft shows. */
+async function cleanUnused() {
+    if (!invitation.value || uploads.value) return;
+    const ok = await useConfirm().confirm({
+        title: 'Dọn ảnh không dùng?',
+        message: 'Xoá vĩnh viễn mọi ảnh/nhạc đã tải lên nhưng không còn dùng trong thiệp (bản đã lưu lẫn bản đang sửa).',
+        confirmText: 'Dọn dẹp',
+        danger: true,
+    });
+    if (!ok) return;
+
+    cleaning.value = true;
+    try {
+        const rows = await prune(usedIds(invitation.value.settings, working.settings));
+        const files = await pruneOrphanFiles(Number(props.id));
+        toast.success(rows || files ? `Đã xoá ${rows} tệp không dùng${files ? ` và ${files} tệp rác` : ''}` : 'Không có tệp nào cần dọn');
+    } catch (e) {
+        toast.error(errorMessage(e, 'Dọn dẹp thất bại'));
+    } finally {
+        cleaning.value = false;
+    }
+}
+
 async function save() {
     saving.value = true;
     try {
@@ -124,6 +171,16 @@ async function save() {
         invitation.value = inv;
         working.slug = inv.slug;
         toast.success('Đã lưu thay đổi');
+
+        // Replaced / removed pictures are no longer referenced: free their storage.
+        if (!uploads.value) {
+            try {
+                const removed = await prune(usedIds(inv.settings, working.settings));
+                if (removed) toast.success(`Đã xoá ${removed} ảnh cũ không dùng`);
+            } catch {
+                /* clean-up is best effort; the button can retry */
+            }
+        }
     } catch (e) {
         toast.error(errorMessage(e, 'Lưu thất bại'));
     } finally {
@@ -165,6 +222,14 @@ onMounted(load);
             <div class="mb-3 flex items-center justify-between">
                 <RouterLink :to="{ name: 'invitations' }" class="text-sm text-gray-500 hover:text-gray-700">← Danh sách</RouterLink>
                 <div class="flex items-center gap-2">
+                    <button
+                        :disabled="cleaning || uploads > 0"
+                        class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-60"
+                        title="Xoá các ảnh/nhạc đã tải lên nhưng không còn dùng"
+                        @click="cleanUnused"
+                    >
+                        {{ cleaning ? 'Đang dọn...' : 'Dọn ảnh không dùng' }}
+                    </button>
                     <button class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium hover:bg-gray-50" @click="togglePublish">
                         {{ invitation.status === 'published' ? 'Ẩn' : 'Xuất bản' }}
                     </button>

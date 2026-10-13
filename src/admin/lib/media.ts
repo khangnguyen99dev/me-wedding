@@ -5,8 +5,14 @@ import { MEDIA_BUCKET, assetUrl, supabase } from '@/admin/lib/supabase';
 /*
  * Media pipeline (replaces Spatie Media Library + GD conversions):
  * images are resized to WebP in the browser ("web" ≤1920px, "thumb" ≤600px),
- * all variants go to Supabase Storage under {invitation_id}/{uuid}/..., and a
- * `media` row records their URLs. Settings reference media by row id.
+ * stored in Supabase Storage under {invitation_id}/{uuid}/..., and a `media`
+ * row records their URLs. Settings reference media by row id.
+ *
+ * Storage is tight, so the full-size original is NOT kept: "web" doubles as
+ * "full" (only GIFs and files the browser cannot decode are stored as-is).
+ * A file whose name matches an earlier upload of this invitation reuses that
+ * row instead of uploading again, and rows the settings no longer reference
+ * are deleted on save (see pruneMedia).
  */
 
 const IMAGE_MAX = 50 * 1024 * 1024;
@@ -70,26 +76,42 @@ export async function uploadMedia(invitationId: number, file: File, collection: 
         throw new Error(isAudio ? 'File nhạc tối đa 20MB.' : 'Ảnh tối đa 50MB.');
     }
 
+    // Same name as an earlier upload of this invitation: reuse it, no new upload.
+    // (Rows without storage_paths are template demo files and never match.)
+    const { data: existing } = await supabase
+        .from('media')
+        .select('*')
+        .eq('invitation_id', invitationId)
+        .eq('collection', collection)
+        .eq('name', file.name)
+        .neq('storage_paths', '{}')
+        .order('id', { ascending: false })
+        .limit(1);
+    if (existing?.length) return existing[0] as MediaRow;
+
     const dir = `${invitationId}/${crypto.randomUUID()}`;
     const paths: string[] = [];
     const row: Partial<MediaRow> = { invitation_id: invitationId, collection, name: file.name, alt: '' };
 
     try {
-        const fullPath = `${dir}/original.${extension(file)}`;
-        row.full_url = await put(fullPath, file, file.type);
-        paths.push(fullPath);
-
         // GIFs keep their animation: no conversions.
-        if (!isAudio && file.type !== 'image/gif') {
-            const [web, thumb] = await Promise.all([resize(file, 1920), resize(file, 600, 0.8)]);
-            if (web) {
-                paths.push(`${dir}/web.webp`);
-                row.web_url = await put(`${dir}/web.webp`, web, 'image/webp');
-            }
-            if (thumb) {
-                paths.push(`${dir}/thumb.webp`);
-                row.thumb_url = await put(`${dir}/thumb.webp`, thumb, 'image/webp');
-            }
+        const [web, thumb] =
+            isAudio || file.type === 'image/gif'
+                ? [null, null]
+                : await Promise.all([resize(file, 1920), resize(file, 600, 0.8)]);
+
+        if (web) {
+            paths.push(`${dir}/web.webp`);
+            row.web_url = await put(`${dir}/web.webp`, web, 'image/webp');
+            row.full_url = row.web_url;
+        } else {
+            const fullPath = `${dir}/original.${extension(file)}`;
+            paths.push(fullPath);
+            row.full_url = await put(fullPath, file, file.type);
+        }
+        if (thumb) {
+            paths.push(`${dir}/thumb.webp`);
+            row.thumb_url = await put(`${dir}/thumb.webp`, thumb, 'image/webp');
         }
 
         row.storage_paths = paths;
@@ -108,4 +130,51 @@ export async function removeStorage(rows: Pick<MediaRow, 'storage_paths'>[]): Pr
     for (let i = 0; i < paths.length; i += 100) {
         await supabase.storage.from(MEDIA_BUCKET).remove(paths.slice(i, i + 100));
     }
+}
+
+/**
+ * Delete this invitation's media rows (and their files) that none of the given
+ * settings snapshots reference. Returns how many rows were removed.
+ */
+export async function pruneMedia(invitationId: number, keep: Set<number>): Promise<number> {
+    const { data, error } = await supabase.from('media').select('id, storage_paths').eq('invitation_id', invitationId);
+    if (error) throw error;
+
+    const unused = (data ?? []).filter((m) => !keep.has(Number(m.id)));
+    if (!unused.length) return 0;
+
+    await removeStorage(unused);
+    const { error: dErr } = await supabase.from('media').delete().in('id', unused.map((m) => m.id));
+    if (dErr) throw dErr;
+    return unused.length;
+}
+
+/**
+ * Remove storage folders under {invitation_id}/ that no media row owns
+ * (left behind by interrupted uploads or failed clean-ups). Returns files removed.
+ */
+export async function pruneOrphanFiles(invitationId: number): Promise<number> {
+    const bucket = supabase.storage.from(MEDIA_BUCKET);
+    const { data: rows, error } = await supabase.from('media').select('storage_paths').eq('invitation_id', invitationId);
+    if (error) throw error;
+    const owned = new Set((rows ?? []).flatMap((r) => (r.storage_paths ?? []) as string[]));
+
+    const { data: folders, error: lErr } = await bucket.list(String(invitationId), { limit: 1000 });
+    if (lErr) throw lErr;
+
+    const orphans: string[] = [];
+    for (const f of folders ?? []) {
+        const dir = `${invitationId}/${f.name}`;
+        const { data: files } = await bucket.list(dir, { limit: 100 });
+        for (const file of files ?? []) {
+            const path = `${dir}/${file.name}`;
+            if (!owned.has(path)) orphans.push(path);
+        }
+    }
+
+    for (let i = 0; i < orphans.length; i += 100) {
+        const { error: rErr } = await bucket.remove(orphans.slice(i, i + 100));
+        if (rErr) throw rErr;
+    }
+    return orphans.length;
 }

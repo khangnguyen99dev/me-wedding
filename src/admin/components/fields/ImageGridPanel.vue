@@ -3,12 +3,13 @@ import { computed, ref } from 'vue';
 import { useMediaContext } from '@/admin/lib/mediaContext';
 import { useToasts } from '@/admin/lib/toast';
 import type { FieldDef, MediaImage } from '@/admin/lib/types';
+import { REMOVED_IMAGE, placeholderImage } from '@shared/settings';
 
 const props = defineProps<{
     fields: Record<string, FieldDef>;
     values: Record<string, unknown>;
 }>();
-const emit = defineEmits<{ change: [{ key: string; value: number | null }] }>();
+const emit = defineEmits<{ change: [{ key: string; value: number | typeof REMOVED_IMAGE | null }] }>();
 
 const media = useMediaContext();
 const toast = useToasts();
@@ -22,15 +23,20 @@ const items = computed(() =>
         .filter(({ def }) => !query.value || (def.label ?? '').toLowerCase().includes(query.value.toLowerCase())),
 );
 
-/** Uploaded replacement (if any) wins; otherwise show the shipped original. */
+/** Uploaded replacement (if any) wins, then a removed picture's placeholder, then the shipped original. */
 function preview(key: string, def: FieldDef): string {
     const id = props.values?.[key];
+    if (isRemoved(key)) return placeholderImage(def.width, def.height);
     const custom = typeof id === 'number' ? media.imageById(id) : null;
     return custom?.thumb ?? def.original ?? '';
 }
 
 function isReplaced(key: string): boolean {
     return typeof props.values?.[key] === 'number';
+}
+
+function isRemoved(key: string): boolean {
+    return props.values?.[key] === REMOVED_IMAGE;
 }
 
 async function onPick(key: string, e: Event) {
@@ -67,7 +73,7 @@ async function onPick(key: string, e: Event) {
                 v-for="it in items"
                 :key="it.key"
                 class="overflow-hidden rounded-lg border"
-                :class="isReplaced(it.key) ? 'border-brand-400 ring-1 ring-brand-200' : 'border-gray-200'"
+                :class="isReplaced(it.key) ? 'border-brand-400 ring-1 ring-brand-200' : isRemoved(it.key) ? 'border-dashed border-gray-300' : 'border-gray-200'"
             >
                 <div class="relative aspect-square bg-gray-50">
                     <img :src="preview(it.key, it.def)" class="h-full w-full object-cover" loading="lazy" alt="" />
@@ -75,6 +81,10 @@ async function onPick(key: string, e: Event) {
                         v-if="isReplaced(it.key)"
                         class="absolute left-1 top-1 rounded bg-brand-600 px-1.5 py-0.5 text-[10px] font-medium text-white"
                     >đã đổi</span>
+                    <span
+                        v-else-if="isRemoved(it.key)"
+                        class="absolute left-1 top-1 rounded bg-gray-500 px-1.5 py-0.5 text-[10px] font-medium text-white"
+                    >đã xoá</span>
                     <div
                         v-if="busy === it.key"
                         class="absolute inset-0 grid place-items-center bg-white/70 text-xs text-gray-600"
@@ -88,11 +98,18 @@ async function onPick(key: string, e: Event) {
                         @click="inputs[it.key]?.click()"
                     >Đổi ảnh</button>
                     <button
-                        v-if="isReplaced(it.key)"
+                        v-if="isReplaced(it.key) || isRemoved(it.key)"
                         type="button"
                         class="rounded px-2 py-1 text-xs text-gray-500 hover:bg-gray-100"
                         @click="emit('change', { key: it.key, value: null })"
                     >Khôi phục</button>
+                    <button
+                        v-else
+                        type="button"
+                        class="rounded px-2 py-1 text-xs text-rose-600 hover:bg-rose-50"
+                        title="Thay ảnh mẫu bằng khung trống có ghi kích thước"
+                        @click="emit('change', { key: it.key, value: REMOVED_IMAGE })"
+                    >Xoá</button>
                 </div>
                 <input
                     :ref="(el) => (inputs[it.key] = el as HTMLInputElement | null)"
