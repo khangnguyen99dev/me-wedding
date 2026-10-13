@@ -156,7 +156,8 @@ img {
 .inv-injected {
     max-width: 700px;
     margin: 0 auto;
-    padding: 56px 20px;
+    /* Extra bottom room: the next LadiPage section starts right after this one. */
+    padding: 56px 20px 72px;
     text-align: center;
 }
 .inv-injected__title {

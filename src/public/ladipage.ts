@@ -328,6 +328,18 @@ function hydrateMusic() {
     if (audio) { audio.src = cfg.music; audio.setAttribute('data-audio', ''); }
 }
 
+/**
+ * An injected block (gallery / RSVP / guestbook) replaced the section's fixed
+ * LadiPage layout: let the section grow with it, so a long form or wish list
+ * pushes the next section down instead of running over it.
+ */
+function fitSection(host: HTMLElement) {
+    host.removeAttribute('style');
+    host.style.height = 'auto';
+    const section = host.closest<HTMLElement>('.ladi-section');
+    if (section && section !== host) section.style.setProperty('height', 'auto', 'important');
+}
+
 function container(sectionId?: string): HTMLElement | null {
     if (!sectionId) return null;
     const sec = document.getElementById(sectionId);
@@ -345,8 +357,7 @@ function injectGallery() {
         ${cfg.blocks?.gallery?.tagline ? `<p class="inv-injected__sub">${cfg.blocks.gallery.tagline}</p>` : ''}
         <div class="inv-grid">${figs}</div>
     </div>`;
-    host.removeAttribute('style');
-    host.style.height = 'auto';
+    fitSection(host);
 }
 
 function injectRsvp() {
@@ -373,8 +384,7 @@ function injectRsvp() {
             <p data-form-msg style="text-align:center;min-height:1.2em"></p>
         </form>
     </div>`;
-    host.removeAttribute('style');
-    host.style.height = 'auto';
+    fitSection(host);
 }
 
 function injectGuestbook() {
@@ -395,8 +405,7 @@ function injectGuestbook() {
         </form>
         <div class="inv-wishes" data-wishes style="max-width:520px;margin:24px auto 0;display:grid;gap:12px;max-height:360px;overflow:auto"></div>
     </div>`;
-    host.removeAttribute('style');
-    host.style.height = 'auto';
+    fitSection(host);
 }
 
 /** Copy to clipboard, with a fallback for browsers/contexts without the API. */
