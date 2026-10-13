@@ -4,8 +4,9 @@ import type { FieldDef } from '@/admin/lib/types';
 import ImageField from './ImageField.vue';
 import GalleryField from './GalleryField.vue';
 import AudioField from './AudioField.vue';
+import MarkerField from './MarkerField.vue';
 
-const props = defineProps<{ field: FieldDef; modelValue: any }>();
+const props = defineProps<{ field: FieldDef; modelValue: any; siblings?: Record<string, any> }>();
 const emit = defineEmits<{ 'update:modelValue': [any] }>();
 
 const inputClass =
@@ -66,6 +67,7 @@ const isBoolean = computed(() => props.field.type === 'boolean');
         <ImageField v-else-if="field.type === 'image'" v-model="model" />
         <GalleryField v-else-if="field.type === 'gallery'" v-model="model" />
         <AudioField v-else-if="field.type === 'audio'" v-model="model" />
+        <MarkerField v-else-if="field.type === 'markers'" v-model="model" :field="field" :siblings="siblings" />
 
         <!-- fallback -->
         <input v-else v-model="model" type="text" :class="inputClass" />

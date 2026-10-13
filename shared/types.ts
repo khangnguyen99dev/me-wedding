@@ -7,7 +7,8 @@ export type FieldType =
     | 'image' | 'gallery' | 'audio'
     | 'color' | 'font' | 'select'
     | 'date' | 'datetime' | 'time'
-    | 'boolean' | 'url' | 'map';
+    | 'boolean' | 'url' | 'map'
+    | 'markers';
 
 /** A single field definition from a template schema. */
 export interface FieldDef {
@@ -19,7 +20,11 @@ export interface FieldDef {
     default?: unknown;
     group?: string;
     options?: Array<{ value: string; label: string }>;
-    /** custom_images grid: the shipped image URL shown as the current value. */
+    /** markers: sibling image field (same section) the points sit on. */
+    image?: string;
+    /** markers: width / height of the page box that shows that image. */
+    aspect?: number;
+    /** custom_images grid / markers: the shipped image URL shown as the current value. */
     original?: string;
     /** custom_images grid: CSS selectors that paint this picture slot (desktop + mobile rules). */
     targets?: string[];
@@ -60,6 +65,8 @@ export interface LadiMap {
     countdown?: Record<string, string>;
     video?: Record<string, string>;
     actions?: Record<string, 'rsvp' | 'guestbook' | 'gallery' | 'map'>;
+    /** settings path (markers field) -> picture element and the marker element placed on it */
+    markers?: Record<string, { image: string; marker: string }>;
     /** settings path -> element id(s) hidden when that boolean is off */
     toggles?: Record<string, string | string[]>;
 }

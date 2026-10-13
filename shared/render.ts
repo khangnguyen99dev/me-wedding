@@ -271,6 +271,17 @@ function buildConfig(settings: Record<string, any>, ladi: LadiMap, timezone: str
         if (at) countdown[id] = at;
     }
 
+    // Markers (calendar hearts): points as fractions of the picture box.
+    const markers: { image: string; marker: string; points: { x: number; y: number }[] }[] = [];
+    for (const [path, ids] of Object.entries(ladi.markers ?? {})) {
+        const value = dataGet(settings, path);
+        if (!Array.isArray(value)) continue;
+        const points = value
+            .map((p) => ({ x: Number(p?.x), y: Number(p?.y) }))
+            .filter((p) => p.x >= 0 && p.x <= 1 && p.y >= 0 && p.y <= 1);
+        markers.push({ ...ids, points });
+    }
+
     const foods = String(dataGet(settings, 'rsvp.food_options', '') ?? '')
         .split(',')
         .map((s) => s.trim())
@@ -288,6 +299,7 @@ function buildConfig(settings: Record<string, any>, ladi: LadiMap, timezone: str
         links,
         copy: nonEmpty(settings, ladi.copy),
         countdown,
+        markers,
         actions: ladi.actions ?? {},
         music: dataGet(settings, 'music.audio') ?? null,
         gallery: dataGet(settings, 'gallery.images', []) ?? [],

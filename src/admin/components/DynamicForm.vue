@@ -73,6 +73,7 @@ function groupedFields(def: SectionDef) {
                             :key="f.key"
                             :field="f.def"
                             :model-value="section(key)[f.key]"
+                            :siblings="section(key)"
                             @update:model-value="setField(key, f.key, $event)"
                         />
                     </div>

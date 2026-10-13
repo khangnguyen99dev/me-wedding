@@ -133,6 +133,9 @@
             "BOX38": "dress.color_1_hex",
             "BOX39": "dress.color_2_hex"
         },
+        "markers": {
+            "countdown.hearts": { "image": "IMAGE19", "marker": "SHAPE30" }
+        },
         "toggles": {
             "gift.enabled": ["SECTION15", "QRchure", "QRcodau"],
             "video.enabled": ["SECTION20", "video"]
@@ -210,6 +213,15 @@
             "fields": {
                 "heading": { "type": "text", "label": "Tiêu đề (vd Lịch cưới Chúng mình)", "max": 60 },
                 "calendar_image": { "type": "image", "label": "Ảnh lịch tháng cưới" },
+                "hearts": {
+                    "type": "markers",
+                    "label": "Trái tim trên lịch",
+                    "image": "calendar_image",
+                    "aspect": 0.8897,
+                    "original": "/templates/flowers/images/14-20240719053009-27sg6.png",
+                    "default": [{ "x": 0.7652, "y": 0.5849 }],
+                    "help": "Bấm lên ảnh để đặt trái tim vào ngày cưới (đặt được nhiều ngày), bấm vào trái tim để gỡ."
+                },
                 "info": { "type": "textarea", "label": "Thông tin dưới ảnh lịch", "help": "vd: 10:00 Thứ Bảy, Ngày 14/09/2024\n(Tức ngày 12/08 Giáp Thìn)", "max": 300 },
                 "target": { "type": "datetime", "label": "Thời điểm đếm ngược tới", "help": "Để trống sẽ giữ nguyên đồng hồ gốc của mẫu." },
                 "label_day": { "type": "text", "label": "Nhãn Ngày", "group": "Nhãn đồng hồ", "max": 20 },

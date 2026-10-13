@@ -25,6 +25,8 @@ interface InvConfig {
     copy?: Record<string, string>;
     /** element id -> ISO date the countdown clock runs to */
     countdown?: Record<string, string>;
+    /** markers (calendar hearts): copies of `marker` centred on fractions of `image` */
+    markers?: { image: string; marker: string; points: { x: number; y: number }[] }[];
     /** element id -> injected block it scrolls to */
     actions?: Record<string, 'rsvp' | 'guestbook' | 'gallery' | 'map'>;
     music?: string | null;
@@ -196,6 +198,44 @@ function hydrateCountdown() {
         el.setAttribute('data-date-start', '0');
         el.setAttribute('data-date-end', String(at));
         el.removeAttribute('data-end');
+    }
+}
+
+/** Offset of `el` inside `ancestor`, ignoring transforms (entrance animations scale elements). */
+function offsetWithin(el: HTMLElement, ancestor: Element): { x: number; y: number } | null {
+    let x = 0;
+    let y = 0;
+    let cur: HTMLElement | null = el;
+    while (cur && cur !== ancestor) {
+        x += cur.offsetLeft;
+        y += cur.offsetTop;
+        cur = cur.offsetParent as HTMLElement | null;
+    }
+    return cur ? { x, y } : null;
+}
+
+/**
+ * Put the template's marker (the pulsing heart) on each chosen point of its
+ * picture — one copy per point (the wedding day(s) on the couple's calendar);
+ * no points hides it.
+ */
+function placeMarkers() {
+    for (const { image, marker, points } of cfg.markers ?? []) {
+        const img = document.getElementById(image);
+        const heart = document.getElementById(marker);
+        const parent = heart?.offsetParent;
+        if (!img || !heart || !parent) continue;
+        if (!points.length) { heart.style.setProperty('display', 'none', 'important'); continue; }
+
+        const at = offsetWithin(img, parent);
+        if (!at) continue;
+        points.forEach((p, i) => {
+            const el = i === 0 ? heart : (heart.cloneNode(true) as HTMLElement);
+            el.style.left = `${at.x + p.x * img.offsetWidth - heart.offsetWidth / 2}px`;
+            el.style.top = `${at.y + p.y * img.offsetHeight - heart.offsetHeight / 2}px`;
+            // Copies keep the id so the template's own CSS (size, colour, pulse) applies.
+            if (i > 0) heart.parentNode!.insertBefore(el, heart.nextSibling);
+        });
     }
 }
 
@@ -410,6 +450,7 @@ function run() {
         hydrateInputs();
         hydrateLinks();
         hydrateCountdown();
+        placeMarkers();
         hydrateMusic();
         injectGallery();
         injectRsvp();
