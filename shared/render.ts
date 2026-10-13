@@ -299,6 +299,23 @@ function buildConfig(settings: Record<string, any>, ladi: LadiMap, timezone: str
         markers.push({ ...ids, points });
     }
 
+    // Repeatable blocks (extra events): per item, element id -> text / url / picture.
+    const repeat = (ladi.repeat ?? []).map((r) => ({
+        section: r.section,
+        block: r.block,
+        step: r.step,
+        actions: r.actions ?? {},
+        items: (Array.isArray(dataGet(settings, r.path)) ? (dataGet(settings, r.path) as Record<string, any>[]) : []).map((item) => {
+            const pick = (map: Record<string, string> | undefined, value: (v: any) => unknown) =>
+                Object.fromEntries(Object.entries(map ?? {}).map(([id, field]) => [id, value(item?.[field])]));
+            return {
+                text: pick(r.text, (v) => (typeof v === 'string' ? v : '')),
+                links: pick(r.links, (v) => (typeof v === 'string' && v.trim() ? v.trim() : null)),
+                images: pick(r.images, (v) => v?.web ?? v?.full ?? null),
+            };
+        }),
+    }));
+
     const foods = String(dataGet(settings, 'rsvp.food_options', '') ?? '')
         .split(',')
         .map((s) => s.trim())
@@ -317,6 +334,7 @@ function buildConfig(settings: Record<string, any>, ladi: LadiMap, timezone: str
         copy: nonEmpty(settings, ladi.copy),
         countdown,
         markers,
+        repeat,
         inert: ladi.inert ?? [],
         actions: ladi.actions ?? {},
         music: dataGet(settings, 'music.audio') ?? null,

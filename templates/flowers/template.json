@@ -136,6 +136,18 @@
         "markers": {
             "countdown.hearts": { "image": "IMAGE19", "marker": "SHAPE30" }
         },
+        "repeat": [
+            {
+                "path": "events.items",
+                "section": "SECTION22",
+                "block": "GROUP171",
+                "step": 380,
+                "text": { "HEADLINE112": "title", "PARAGRAPH172": "time", "PARAGRAPH173": "venue" },
+                "links": { "BUTTON46": "map_url" },
+                "images": { "IMAGE46": "image" },
+                "actions": { "BUTTON45": "rsvp" }
+            }
+        ],
         "inert": ["IMAGE4"],
         "toggles": {
             "gift.enabled": ["SECTION15", "QRchure", "QRcodau"],
@@ -262,7 +274,7 @@
             }
         },
         "events": {
-            "label": "Sự kiện cưới (2 sự kiện)",
+            "label": "Sự kiện cưới",
             "fields": {
                 "heading": { "type": "text", "label": "Tiêu đề mục", "max": 60 },
                 "e1_title": { "type": "text", "label": "Tên sự kiện 1", "group": "Sự kiện 1", "max": 80 },
@@ -275,6 +287,17 @@
                 "e2_venue": { "type": "textarea", "label": "Địa điểm (mỗi dòng 1)", "group": "Sự kiện 2", "max": 200 },
                 "e2_map_url": { "type": "map", "label": "Link bản đồ", "group": "Sự kiện 2" },
                 "e2_image": { "type": "image", "label": "Ảnh sự kiện", "group": "Sự kiện 2" }
+            },
+            "repeater": {
+                "label": "Sự kiện thêm",
+                "item_label": "Sự kiện",
+                "item_fields": {
+                    "title": { "type": "text", "label": "Tên sự kiện", "max": 60 },
+                    "time": { "type": "text", "label": "Thời gian", "max": 120 },
+                    "venue": { "type": "textarea", "label": "Địa điểm", "max": 200 },
+                    "map_url": { "type": "url", "label": "Link Google Maps" },
+                    "image": { "type": "image", "label": "Ảnh sự kiện" }
+                }
             }
         },
         "gift": {

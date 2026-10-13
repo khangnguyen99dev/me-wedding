@@ -69,6 +69,21 @@ export interface LadiMap {
     countdown?: Record<string, string>;
     video?: Record<string, string>;
     actions?: Record<string, 'rsvp' | 'guestbook' | 'gallery' | 'map'>;
+    /**
+     * Repeatable blocks (extra wedding events): each item of the repeater at `path`
+     * becomes a copy of `block`, placed `step` px below the previous one inside `section`.
+     * Maps are element id (inside the block) -> item field.
+     */
+    repeat?: Array<{
+        path: string;
+        section: string;
+        block: string;
+        step: number;
+        text?: Record<string, string>;
+        links?: Record<string, string>;
+        images?: Record<string, string>;
+        actions?: Record<string, 'rsvp' | 'guestbook' | 'gallery' | 'map'>;
+    }>;
     /** element ids that must not react to clicks (the logo's demo lightbox, ...) */
     inert?: string[];
     /** settings path (markers field) -> picture element and the marker element placed on it */

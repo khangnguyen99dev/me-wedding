@@ -25,6 +25,14 @@ interface InvConfig {
     copy?: Record<string, string>;
     /** element id -> ISO date the countdown clock runs to */
     countdown?: Record<string, string>;
+    /** extra copies of a block (wedding events): per item, element id -> text / url / picture */
+    repeat?: {
+        section: string;
+        block: string;
+        step: number;
+        actions: Record<string, 'rsvp' | 'guestbook' | 'gallery' | 'map'>;
+        items: { text: Record<string, string>; links: Record<string, string | null>; images: Record<string, string | null> }[];
+    }[];
     /** element ids that must not react to clicks (logo) */
     inert?: string[];
     /** markers (calendar hearts): copies of `marker` centred on fractions of `image` */
@@ -50,20 +58,26 @@ function reveal() {
     document.documentElement.style.visibility = '';
 }
 
+/** Put (multi-line) text into a LadiPage element's text holder; returns the holder. */
+function setText(el: HTMLElement, value: string): HTMLElement {
+    const holder = el.querySelector<HTMLElement>('.ladi-headline, .ladi-paragraph, .ladi-button-text, .ladi-list, .ladi-button') ?? el;
+    if (value.includes('\n')) {
+        holder.innerHTML = value
+            .split('\n')
+            .map((line) => line.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c] as string)))
+            .join('<br>');
+    } else {
+        holder.textContent = value;
+    }
+    return holder;
+}
+
 function hydrateText() {
     for (const [id, value] of Object.entries(cfg.text ?? {})) {
         if (value == null || value === '') continue;
         const el = document.getElementById(id);
         if (!el) continue;
-        const holder = el.querySelector<HTMLElement>('.ladi-headline, .ladi-paragraph, .ladi-button-text, .ladi-list, .ladi-button') ?? el;
-        if (value.includes('\n')) {
-            holder.innerHTML = value
-                .split('\n')
-                .map((line) => line.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c] as string)))
-                .join('<br>');
-        } else {
-            holder.textContent = value;
-        }
+        const holder = setText(el, value);
         // Names live in fixed-width boxes; stop them wrapping/overlapping immediately.
         if (cfg.fit?.includes(id)) holder.style.whiteSpace = 'nowrap';
     }
@@ -210,6 +224,63 @@ function hydrateCountdown() {
         el.setAttribute('data-date-start', '0');
         el.setAttribute('data-date-end', String(at));
         el.removeAttribute('data-end');
+    }
+}
+
+/**
+ * Extra copies of a block (more wedding events than the template has): each
+ * copy sits `step` px below the previous one and the section grows to fit.
+ * Copies keep the original ids so the template CSS styles them; anything that
+ * must act on a copy (links, scroll buttons) is tagged with data attributes.
+ */
+function injectRepeats() {
+    for (const r of cfg.repeat ?? []) {
+        const block = document.getElementById(r.block);
+        const section = document.getElementById(r.section);
+        if (!block || !section || !r.items.length) continue;
+
+        const find = (root: HTMLElement, id: string) =>
+            root.id === id ? root : root.querySelector<HTMLElement>(`[id="${id}"]`);
+        const top = block.offsetTop;
+        let after: HTMLElement = block;
+
+        r.items.forEach((item, i) => {
+            const copy = block.cloneNode(true) as HTMLElement;
+            // Not left waiting for LadiPage's lazy-load / entrance animation, which only track originals.
+            for (const el of [copy, ...copy.querySelectorAll<HTMLElement>('*')]) {
+                el.classList.remove('ladi-lazyload', 'ladi-animation-hidden');
+            }
+            copy.setAttribute('data-inv-copy', '');
+            copy.style.top = `${top + r.step * (i + 1)}px`;
+
+            for (const [id, value] of Object.entries(item.text)) {
+                const el = find(copy, id);
+                if (el) setText(el, value);
+            }
+            for (const [id, url] of Object.entries(item.links)) {
+                const el = find(copy, id);
+                if (!el) continue;
+                if (url) el.setAttribute('data-inv-link', url);
+                else el.style.setProperty('display', 'none', 'important');
+            }
+            for (const [id, action] of Object.entries(r.actions)) {
+                find(copy, id)?.setAttribute('data-inv-action', action);
+            }
+            for (const [id, url] of Object.entries(item.images)) {
+                const bg = find(copy, id)?.querySelector<HTMLElement>('.ladi-image-background');
+                if (!bg || !url) continue;
+                // Inline !important beats the template CSS and any "Ảnh trong mẫu" override of the original.
+                bg.style.setProperty('background-image', `url("${url.replace(/"/g, '%22')}")`, 'important');
+                for (const [prop, val] of [['top', '0'], ['left', '0'], ['width', '100%'], ['height', '100%'], ['background-size', 'cover'], ['background-position', 'center center']]) {
+                    bg.style.setProperty(prop, val, 'important');
+                }
+            }
+
+            after.after(copy);
+            after = copy;
+        });
+
+        section.style.height = `${section.offsetHeight + r.step * r.items.length}px`;
     }
 }
 
@@ -371,6 +442,16 @@ function wireButtons() {
         // Never hijack our own injected gallery / forms / wishes / nav.
         if (target?.closest?.('.inv-injected, .inv-pubform, [data-wishes], .inv-drawer, .inv-fab')) return;
 
+        // Copies of repeated blocks (extra events) carry their own targets.
+        const tagged = target?.closest?.<HTMLElement>('[data-inv-link], [data-inv-action]');
+        if (tagged) {
+            e.preventDefault(); e.stopPropagation();
+            const url = tagged.getAttribute('data-inv-link');
+            if (url) window.open(url, '_blank', 'noopener');
+            else scrollTo(blocks[tagged.getAttribute('data-inv-action') ?? '']);
+            return;
+        }
+
         const links = cfg.links ?? {};
         const linkId = hit(links, target);
         if (linkId) {
@@ -479,6 +560,7 @@ function run() {
         hydrateColors();
         hydrateInputs();
         hydrateLinks();
+        injectRepeats();
         hydrateCountdown();
         placeMarkers();
         hydrateMusic();
