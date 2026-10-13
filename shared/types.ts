@@ -30,6 +30,8 @@ export interface FieldDef {
     original?: string;
     /** custom_images grid: CSS selectors that paint this picture slot (desktop + mobile rules). */
     targets?: string[];
+    /** custom_images grid: template file names this slot shows (a field bound to one of them wins over the slot). */
+    files?: string[];
     /** custom_images grid: older per-file field keys whose stored value this slot inherits. */
     aliases?: string[];
     /** custom_images grid: pixel size of the shipped image (labels its placeholder). */

@@ -67,7 +67,7 @@ export function renderLadiPage(input: RenderInput, opts: RenderOptions): string 
     const ladi = manifest.ladipage ?? {};
 
     const config = buildConfig(settings, ladi, opts.timezone);
-    const slotCss = customImageCss(manifest, settings, invitation.settings ?? {});
+    const slotCss = customImageCss(manifest, settings, invitation.settings ?? {}, ownedFiles(ladi, settings));
     config.api = { url: opts.supabase.url, key: opts.supabase.anonKey };
 
     const seo = seoData(invitation, settings, opts.origin);
@@ -119,6 +119,16 @@ function applyBranding(html: string, seo: Seo): string {
     return html.replace(/<link[^>]*rel="[^"]*icon[^"]*"[^>]*>/gi, '');
 }
 
+/** Template files (ladipage.images) whose dedicated field holds an uploaded picture, not a demo file. */
+function ownedFiles(ladi: LadiMap, settings: Record<string, any>): Set<string> {
+    const owned = new Set<string>();
+    for (const [file, path] of Object.entries(ladi.images ?? {})) {
+        const url = dataGet(settings, `${path}.web`) ?? dataGet(settings, `${path}.full`);
+        if (typeof url === 'string' && !url.includes('/templates/')) owned.add(file);
+    }
+    return owned;
+}
+
 /** A URL safe inside url("...") in a <style> block. */
 function cssUrl(url: string): string {
     return url.replace(/["\\<>\n\r]/g, (c) => encodeURIComponent(c));
@@ -131,12 +141,19 @@ function cssUrl(url: string): string {
  * Swapped boxes fill their frame (LadiPage crops each box to the ORIGINAL photo).
  * `:not(.ladi-lazyload)` keeps LadiPage's lazy loading working.
  */
-function customImageCss(manifest: TemplateManifest, settings: Record<string, any>, raw: Record<string, any>): string {
+function customImageCss(
+    manifest: TemplateManifest,
+    settings: Record<string, any>,
+    raw: Record<string, any>,
+    owned: Set<string>,
+): string {
     const rules: string[] = [];
     const fill: string[] = [];
 
     for (const [key, def] of Object.entries(manifest.sections?.custom_images?.fields ?? {})) {
         if (!def.targets?.length) continue;
+        // A dedicated field (e.g. "Ảnh lịch tháng cưới") holding the couple's own picture wins.
+        if (def.files?.some((f) => owned.has(f))) continue;
         const url =
             fieldValue(raw.custom_images, key, def) === REMOVED_IMAGE
                 ? placeholderImage(def.width, def.height)

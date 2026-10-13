@@ -10,8 +10,8 @@ import { MEDIA_BUCKET, assetUrl, supabase } from '@/admin/lib/supabase';
  *
  * Storage is tight, so the full-size original is NOT kept: "web" doubles as
  * "full" (only GIFs and files the browser cannot decode are stored as-is).
- * A file whose name matches an earlier upload of this invitation reuses that
- * row instead of uploading again, and rows the settings no longer reference
+ * A file identical to an earlier upload of this invitation (same content hash)
+ * reuses that row instead of uploading again, and rows the settings no longer reference
  * are deleted on save (see pruneMedia).
  */
 
@@ -52,6 +52,12 @@ async function resize(file: File, max: number, quality = 0.85): Promise<Blob | n
     }
 }
 
+/** First 16 hex chars of the file's SHA-256 (identifies identical uploads). */
+async function sha256(file: File): Promise<string> {
+    const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
+    return Array.from(new Uint8Array(digest).slice(0, 8), (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 function extension(file: File): string {
     const fromName = file.name.split('.').pop()?.toLowerCase();
     return fromName && /^[a-z0-9]{2,5}$/.test(fromName) ? fromName : 'bin';
@@ -76,20 +82,21 @@ export async function uploadMedia(invitationId: number, file: File, collection: 
         throw new Error(isAudio ? 'File nhạc tối đa 20MB.' : 'Ảnh tối đa 50MB.');
     }
 
-    // Same name as an earlier upload of this invitation: reuse it, no new upload.
-    // (Rows without storage_paths are template demo files and never match.)
-    const { data: existing } = await supabase
+    // The very same file was uploaded to this invitation before: reuse it, no new
+    // upload. Matched by CONTENT (SHA-256 in the storage folder name), not by
+    // name — calendar exports etc. often reuse one file name for new pictures.
+    const hash = await sha256(file);
+    const { data: rows } = await supabase
         .from('media')
         .select('*')
         .eq('invitation_id', invitationId)
         .eq('collection', collection)
-        .eq('name', file.name)
         .neq('storage_paths', '{}')
-        .order('id', { ascending: false })
-        .limit(1);
-    if (existing?.length) return existing[0] as MediaRow;
+        .order('id', { ascending: false });
+    const same = (rows ?? []).find((m) => (m.storage_paths as string[]).some((p) => p.startsWith(`${invitationId}/${hash}-`)));
+    if (same) return same as MediaRow;
 
-    const dir = `${invitationId}/${crypto.randomUUID()}`;
+    const dir = `${invitationId}/${hash}-${crypto.randomUUID().slice(0, 8)}`;
     const paths: string[] = [];
     const row: Partial<MediaRow> = { invitation_id: invitationId, collection, name: file.name, alt: '' };
 

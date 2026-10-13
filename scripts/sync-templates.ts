@@ -159,6 +159,7 @@ function imageSection(key: string): SectionDef | null {
             group: sec ? sectionName.get(sec.id) : undefined,
             original: '/' + sized[0].rel,
             targets: [...slot.selectors],
+            files: slot.files.map((rel) => rel.split('/').pop()!),
             aliases: slot.files.map((rel) => 'img_' + md5(rel)),
             ...(sized[0].size ?? {}),
         };

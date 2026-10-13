@@ -31,12 +31,18 @@ const slotValue = computed(() => {
     const key = el && Object.keys(fields).find((k) => fields[k].targets?.some((t) => t.startsWith(`#${el}>`) || t.startsWith(`#${el} `)));
     return key ? form?.settings().custom_images?.[key] : undefined;
 });
-const imageId = computed(() => {
-    if (typeof slotValue.value === 'number') return slotValue.value;
-    return props.field.image ? props.siblings?.[props.field.image] : null;
+// Same precedence as the page: the couple's own upload in the image field,
+// then a "Ảnh trong mẫu" replacement, then the field's demo file / the template's.
+const fieldId = computed(() => (props.field.image ? props.siblings?.[props.field.image] : null));
+const fieldOwn = computed(() => {
+    const m = media.imageById(fieldId.value);
+    return m && !m.web.includes('/templates/') ? m : null;
 });
+const imageId = computed(() => (fieldOwn.value ? fieldId.value : typeof slotValue.value === 'number' ? slotValue.value : fieldId.value));
 const imageUrl = computed(() =>
-    slotValue.value === REMOVED_IMAGE ? '' : (media.imageById(imageId.value)?.web ?? props.field.original ?? ''),
+    !fieldOwn.value && slotValue.value === REMOVED_IMAGE
+        ? ''
+        : (media.imageById(imageId.value)?.web ?? props.field.original ?? ''),
 );
 const boxStyle = computed(() => ({
     aspectRatio: String(props.field.aspect ?? 1),
