@@ -300,6 +300,7 @@ function buildConfig(settings: Record<string, any>, ladi: LadiMap, timezone: str
         copy: nonEmpty(settings, ladi.copy),
         countdown,
         markers,
+        inert: ladi.inert ?? [],
         actions: ladi.actions ?? {},
         music: dataGet(settings, 'music.audio') ?? null,
         gallery: dataGet(settings, 'gallery.images', []) ?? [],

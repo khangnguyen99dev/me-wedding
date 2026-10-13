@@ -136,6 +136,7 @@
         "markers": {
             "countdown.hearts": { "image": "IMAGE19", "marker": "SHAPE30" }
         },
+        "inert": ["IMAGE4"],
         "toggles": {
             "gift.enabled": ["SECTION15", "QRchure", "QRcodau"],
             "video.enabled": ["SECTION20", "video"]

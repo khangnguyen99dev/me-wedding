@@ -67,6 +67,8 @@ export interface LadiMap {
     countdown?: Record<string, string>;
     video?: Record<string, string>;
     actions?: Record<string, 'rsvp' | 'guestbook' | 'gallery' | 'map'>;
+    /** element ids that must not react to clicks (the logo's demo lightbox, ...) */
+    inert?: string[];
     /** settings path (markers field) -> picture element and the marker element placed on it */
     markers?: Record<string, { image: string; marker: string }>;
     /** settings path -> element id(s) hidden when that boolean is off */

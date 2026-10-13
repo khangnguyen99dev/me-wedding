@@ -6,6 +6,7 @@
     "thumbnail": "images/thumbnail.jpg",
     "ladipage": {
         "sections": { "gallery": "SECTION6", "rsvp": "SECTION20", "guestbook": "SECTION16" },
+        "inert": ["IMAGE6"],
         "hide": ["GROUP103", "NOTIFY1"],
         "nav": [
             { "label": "Thiệp mời", "section": "SECTION7" },

@@ -25,6 +25,8 @@ interface InvConfig {
     copy?: Record<string, string>;
     /** element id -> ISO date the countdown clock runs to */
     countdown?: Record<string, string>;
+    /** element ids that must not react to clicks (logo) */
+    inert?: string[];
     /** markers (calendar hearts): copies of `marker` centred on fractions of `image` */
     markers?: { image: string; marker: string; points: { x: number; y: number }[] }[];
     /** element id -> injected block it scrolls to */
@@ -151,6 +153,16 @@ function hydrateColors() {
         const svg = el.querySelector<SVGElement>('.ladi-shape svg');
         if (svg) { svg.setAttribute('fill', color); continue; }
         (el.querySelector<HTMLElement>('.ladi-box') ?? el).style.backgroundColor = color;
+    }
+}
+
+/** Elements that must not be clickable: LadiPage gave the logo a lightbox of its demo file. */
+function applyInert() {
+    for (const id of cfg.inert ?? []) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        el.style.setProperty('pointer-events', 'none', 'important');
+        el.style.setProperty('cursor', 'default', 'important');
     }
 }
 
@@ -441,9 +453,27 @@ function injectNav() {
     });
 }
 
+/**
+ * Never show LadiPage's "Powered by ladipage" badge. The runtime adds it under a
+ * random class name (so no static CSS can target it); the shipped runtimes are
+ * patched, and this also removes it if a browser still runs a cached copy.
+ */
+function blockBranding() {
+    const isBadge = (el: Element) =>
+        el.parentElement === document.body && getComputedStyle(el).backgroundImage.includes('/by/ladipage.svg');
+    const sweep = () => document.body.querySelectorAll(':scope > div').forEach((el) => isBadge(el) && el.remove());
+    sweep();
+    const obs = new MutationObserver(sweep);
+    obs.observe(document.body, { childList: true });
+    obs.observe(document.head, { childList: true });
+    setTimeout(() => obs.disconnect(), 20000);
+}
+
 function run() {
     try {
+        blockBranding();
         applyHidden();
+        applyInert();
         hydrateText();
         hydrateImages();
         hydrateColors();
